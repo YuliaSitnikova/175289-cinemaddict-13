@@ -6,33 +6,36 @@ import {createFilmCardTemplate} from "./view/film-card";
 import {createShowMoreButton} from "./view/show-more-button";
 import {createFooterStatisticTemplate} from "./view/footer-statictics";
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
+const FILMS_COUNT = 5;
+const FILMS_EXTRA_COUNT = 2;
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 const statisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
 
-render(siteHeaderElement, createProfileTemplate(), `beforeend`);
-render(siteMainElement, createMainNavigationTemplate(), `beforeend`);
-render(siteMainElement, createSortTemplate(), `beforeend`);
-render(siteMainElement, createFilmsTemplate(), `beforeend`);
+const render = (container, template, place = `beforeend`) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+render(siteHeaderElement, createProfileTemplate());
+render(siteMainElement, createMainNavigationTemplate());
+render(siteMainElement, createSortTemplate());
+render(siteMainElement, createFilmsTemplate());
 
 const filmsElement = siteMainElement.querySelector(`.films`);
-const filmsListElements = filmsElement.querySelectorAll(`.films-list`);
+const filmsContainerElement = filmsElement.querySelector(`.films-list:not(films-list--extra) .films-list__container`);
+const filmsExtraContainerElements = filmsElement.querySelectorAll(`.films-list--extra .films-list__container`);
 
-filmsListElements.forEach((filmsList) => {
-  const FILMS_COUNT = filmsList.classList.contains(`films-list--extra`) ? 2 : 5;
-  const filmsContainerElement = filmsList.querySelector(`.films-list__container`);
-  for (let i = 0; i < FILMS_COUNT; i++) {
-    render(filmsContainerElement, createFilmCardTemplate(), `beforeend`);
-  }
-  if (!filmsList.classList.contains(`films-list--extra`)) {
-    render(filmsList, createShowMoreButton(), `beforeend`);
+for (let i = 0; i < FILMS_COUNT; i++) {
+  render(filmsContainerElement, createFilmCardTemplate());
+}
+render(filmsContainerElement, createShowMoreButton(), `afterend`);
+
+filmsExtraContainerElements.forEach((filmsExtraContainerElement) => {
+  for (let i = 0; i < FILMS_EXTRA_COUNT; i++) {
+    render(filmsExtraContainerElement, createFilmCardTemplate());
   }
 });
 
-render(statisticsElement, createFooterStatisticTemplate(), `beforeend`);
-
+render(statisticsElement, createFooterStatisticTemplate());
