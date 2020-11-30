@@ -30,6 +30,48 @@ const generateRating = () => {
   return getRandomInteger(0, 100) / 10;
 };
 
+const generateDirector = () => {
+  const directorsNames = [
+    `Anthony Mann`,
+    `Woody Allen`,
+    `Christopher Nolan`,
+  ];
+
+  return getRandomElement(directorsNames);
+};
+
+const generateWriters = () => {
+  const writersNames = [
+    `Anne Wigton`,
+    `Heinz Herald`,
+    `Richard Weil`,
+  ];
+
+  const writers = new Set();
+
+  for (let i = 0; i < getRandomInteger(1, 3); i++) {
+    writers.add(getRandomElement(writersNames));
+  }
+
+  return Array.from(writers);
+};
+
+const generateActors = () => {
+  const actorsNames = [
+    `Erich von Stroheim`,
+    `Mary Beth Hughes`,
+    `Dan Duryea`,
+  ];
+
+  const actors = new Set();
+
+  for (let i = 0; i < getRandomInteger(1, 3); i++) {
+    actors.add(getRandomElement(actorsNames));
+  }
+
+  return Array.from(actors);
+};
+
 const generateYear = () => {
   const years = [
     `30 March 1945`,
@@ -60,7 +102,7 @@ const generateCountry = () => {
 };
 
 const generateGenres = () => {
-  const genres = [
+  const genresNames = [
     `Cartoon`,
     `Comedy`,
     `Drama`,
@@ -70,13 +112,13 @@ const generateGenres = () => {
     `Western`
   ];
 
-  const genre = new Set();
+  const genres = new Set();
 
   for (let i = 0; i < getRandomInteger(1, 3); i++) {
-    genre.add(getRandomElement(genres));
+    genres.add(getRandomElement(genresNames));
   }
 
-  return Array.from(genre);
+  return Array.from(genres);
 };
 
 const generateDescription = () => {
@@ -130,15 +172,18 @@ export const generateFilm = () => {
     title: generateTitle(),
     titleOriginal: generateTitle(),
     rating: generateRating(),
-    director: `Anthony Mann`,
-    writers: [`Anne Wigton, Heinz Herald, Richard Weil`],
-    actors: [`Erich von Stroheim`, `Mary Beth Hughes`, `Dan Duryea`],
+    director: generateDirector(),
+    writers: generateWriters(),
+    actors: generateActors(),
     release: generateYear(),
     duration: generateDuration(),
     country: generateCountry(),
     genres: generateGenres(),
     description: generateDescription(),
     age: generateAgeLimit(),
-    comments: generateComments()
+    comments: generateComments(),
+    isWatch: Boolean(getRandomInteger(0, 1)),
+    isWatched: Boolean(getRandomInteger(0, 1)),
+    isFavorite: Boolean(getRandomInteger(0, 1))
   };
 };

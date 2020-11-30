@@ -7,24 +7,26 @@ import {createFilmDetailsTemplate} from "./view/film-details";
 import {createShowMoreButton} from "./view/show-more-button";
 import {createFooterStatisticTemplate} from "./view/footer-statictics";
 import {generateFilm} from "./mock/film";
+import {generateNavigation} from "./mock/navigation";
 
 const FILMS_COUNT = 5;
 const FILMS_EXTRA_COUNT = 2;
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
 const filmsExtra = new Array(FILMS_EXTRA_COUNT).fill().map(generateFilm);
+const navigation = generateNavigation(films);
+
+const render = (container, template, place = `beforeend`) => {
+  container.insertAdjacentHTML(place, template);
+};
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 const statisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
 
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 render(siteHeaderElement, createProfileTemplate());
-render(siteMainElement, createMainNavigationTemplate());
+render(siteMainElement, createMainNavigationTemplate(navigation));
 render(siteMainElement, createSortTemplate());
 render(siteMainElement, createFilmsTemplate());
 
@@ -50,4 +52,4 @@ const filmDetailCloseButton = filmDetailElement.querySelector(`.film-details__cl
 
 filmDetailCloseButton.addEventListener(`click`, () => filmDetailElement.remove());
 
-render(statisticsElement, createFooterStatisticTemplate());
+render(statisticsElement, createFooterStatisticTemplate(`130 291`));
