@@ -3,6 +3,7 @@ import {createMainNavigationTemplate} from "./view/main-navigation";
 import {createSortTemplate} from "./view/sort";
 import {createFilmsTemplate} from "./view/films";
 import {createFilmCardTemplate} from "./view/film-card";
+import {createFilmDetailsTemplate} from "./view/film-details";
 import {createShowMoreButton} from "./view/show-more-button";
 import {createFooterStatisticTemplate} from "./view/footer-statictics";
 import {generateFilm} from "./mock/film";
@@ -41,5 +42,12 @@ filmsExtraContainerElements.forEach((filmsExtraContainerElement) => {
     render(filmsExtraContainerElement, createFilmCardTemplate(filmsExtra[i]));
   }
 });
+
+render(siteFooterElement, createFilmDetailsTemplate(films[0]), `afterend`);
+
+const filmDetailElement = document.querySelector(`.film-details`);
+const filmDetailCloseButton = filmDetailElement.querySelector(`.film-details__close-btn`);
+
+filmDetailCloseButton.addEventListener(`click`, () => filmDetailElement.remove());
 
 render(statisticsElement, createFooterStatisticTemplate());

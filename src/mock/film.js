@@ -1,12 +1,4 @@
-const getRandomInteger = (a = 1, b = 0) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  return Math.floor(lower + Math.random() * (upper - lower + 1))
-};
-
-const getRandomElement = (elements) => {
-  return elements[Math.floor(Math.random() * (elements.length))];
-};
+import {getRandomElement, getRandomInteger} from "../utils";
 
 const generatePoster = () => {
   const posters = [
@@ -34,6 +26,10 @@ const generateTitle = () => {
   return getRandomElement(titles);
 };
 
+const generateRating = () => {
+  return getRandomInteger(0, 100) / 10;
+};
+
 const generateYear = () => {
   const years = [
     `30 March 1945`,
@@ -53,16 +49,34 @@ const generateDuration = () => {
   return getRandomElement(durations);
 };
 
-const generateGenre = () => {
-  const genres = [
-    `Musical`,
-    `Western`,
-    `Drama`,
-    `Comedy`,
-    `Cartoon`
+const generateCountry = () => {
+  const countries = [
+    `USA`,
+    `Spain`,
+    `India`
   ];
 
-  return getRandomElement(genres);
+  return getRandomElement(countries);
+};
+
+const generateGenres = () => {
+  const genres = [
+    `Cartoon`,
+    `Comedy`,
+    `Drama`,
+    `Film-Noir`,
+    `Musical`,
+    `Mystery`,
+    `Western`
+  ];
+
+  const genre = new Set();
+
+  for (let i = 0; i < getRandomInteger(1, 3); i++) {
+    genre.add(getRandomElement(genres));
+  }
+
+  return Array.from(genre);
 };
 
 const generateDescription = () => {
@@ -84,13 +98,30 @@ const generateDescription = () => {
   return new Array(sentencesCount).fill().map(() => getRandomElement(sentences)).join(` `);
 };
 
+const generateAgeLimit = () => {
+  const ages = [
+    `0+`,
+    `6+`,
+    `12+`,
+    `16+`,
+    `18+`
+  ];
+
+  return getRandomElement(ages);
+};
+
 const generateComments = () => {
   const comments = [
-    `5`,
-    `34`,
-    `1`
+    `1`,
+    `2`,
+    `3`,
+    `4`,
+    `5`
   ];
-  return comments;
+
+  const commentsCount = getRandomInteger(0, 5);
+
+  return comments.slice(0, commentsCount);
 };
 
 export const generateFilm = () => {
@@ -98,16 +129,16 @@ export const generateFilm = () => {
     poster: generatePoster(),
     title: generateTitle(),
     titleOriginal: generateTitle(),
-    rating: 2.3,
-    producer: ``,
-    screenwriters: ``,
-    cast: [],
+    rating: generateRating(),
+    director: `Anthony Mann`,
+    writers: [`Anne Wigton, Heinz Herald, Richard Weil`],
+    actors: [`Erich von Stroheim`, `Mary Beth Hughes`, `Dan Duryea`],
     release: generateYear(),
     duration: generateDuration(),
-    genre: generateGenre(),
-    country: ``,
+    country: generateCountry(),
+    genres: generateGenres(),
     description: generateDescription(),
-    age: ``,
+    age: generateAgeLimit(),
     comments: generateComments()
   };
 };
