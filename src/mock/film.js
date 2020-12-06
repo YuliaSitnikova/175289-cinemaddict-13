@@ -1,4 +1,5 @@
 import {getRandomElement, getRandomInteger} from "../utils";
+import dayjs from "dayjs";
 
 const generatePoster = () => {
   const posters = [
@@ -72,13 +73,11 @@ const generateActors = () => {
   return Array.from(actors);
 };
 
-const generateYear = () => {
-  const years = [
-    `30 March 1945`,
-    `01 April 1995`
-  ];
+const generateRelease = () => {
+  const maxDaysGap = 36500;
+  const daysGap = getRandomInteger(-maxDaysGap, 0);
 
-  return getRandomElement(years);
+  return dayjs().add(daysGap, `day`).toDate();
 };
 
 const generateDuration = () => {
@@ -175,7 +174,7 @@ export const generateFilm = () => {
     director: generateDirector(),
     writers: generateWriters(),
     actors: generateActors(),
-    release: generateYear(),
+    release: generateRelease(),
     duration: generateDuration(),
     country: generateCountry(),
     genres: generateGenres(),
