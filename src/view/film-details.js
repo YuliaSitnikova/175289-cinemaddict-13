@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import {EMOJIES} from "../constants";
-import {generateComment} from "../mock/comment";
 
 const createFilmDetailsTable = (film) => {
   const {director, writers, actors, release, duration, country, genres} = film;
@@ -72,16 +71,12 @@ const createFilmsDetailAddComment = () => {
   </div>`;
 };
 
-export const createFilmDetailsTemplate = (film) => {
-  const {poster, title, titleOriginal, rating, description, age, comments: commentsIds, isWatch, isWatched, isFavorite} = film;
+export const createFilmDetailsTemplate = (film, comments) => {
+  const {poster, title, titleOriginal, rating, description, age, comments: commentsId, isWatch, isWatched, isFavorite} = film;
 
   const tableTemplate = createFilmDetailsTable(film);
 
-  const commentsCount = commentsIds.length;
-  const comments = new Array(commentsCount).fill().map(generateComment);
-
-
-  const commentsTemplate = commentsCount > 0
+  const commentsTemplate = commentsId.length > 0
     ? createFilmsDetailComments(comments)
     : ``;
 
@@ -134,7 +129,7 @@ export const createFilmDetailsTemplate = (film) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsId.length}</span></h3>
 
           <ul class="film-details__comments-list">
             ${commentsTemplate}

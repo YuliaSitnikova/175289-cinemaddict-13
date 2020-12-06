@@ -1,6 +1,6 @@
-import {getRandomElement, getRandomInteger} from "../utils";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import {getRandomElement, getRandomInteger} from "../utils";
 
 dayjs.extend(duration);
 
@@ -156,17 +156,9 @@ const generateAgeLimit = () => {
 };
 
 const generateComments = () => {
-  const comments = [
-    `1`,
-    `2`,
-    `3`,
-    `4`,
-    `5`
-  ];
-
   const commentsCount = getRandomInteger(0, 5);
 
-  return comments.slice(0, commentsCount);
+  return new Array(commentsCount).fill();
 };
 
 export const generateFilm = () => {
