@@ -1,5 +1,8 @@
 import {getRandomElement, getRandomInteger} from "../utils";
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+
+dayjs.extend(duration);
 
 const generatePoster = () => {
   const posters = [
@@ -81,13 +84,14 @@ const generateRelease = () => {
 };
 
 const generateDuration = () => {
-  const durations = [
-    `1h 55m`,
-    `54m`,
-    `1h 59m`
-  ];
+  const millisecondsPerMinute = 60000;
+  const durationsInMilliseconds = Math.floor(getRandomInteger(millisecondsPerMinute, millisecondsPerMinute * 180));
+  const hours = dayjs.duration(durationsInMilliseconds).hours() > 0
+    ? `${dayjs.duration(durationsInMilliseconds).hours()}h `
+    : ``;
+  const minutes = `${dayjs.duration(durationsInMilliseconds).minutes()}m`;
 
-  return getRandomElement(durations);
+  return hours + minutes;
 };
 
 const generateCountry = () => {
