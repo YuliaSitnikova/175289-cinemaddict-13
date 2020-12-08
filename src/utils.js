@@ -19,3 +19,6 @@ export const getRandomElements = (elements, count) => {
   return randomElements.slice(0, count);
 };
 
+export const render = (container, template, place = `beforeend`) => {
+  container.insertAdjacentHTML(place, template);
+};

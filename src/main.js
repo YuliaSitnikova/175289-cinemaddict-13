@@ -1,3 +1,4 @@
+import {render} from "./utils";
 import {createProfileTemplate} from "./view/profile.js";
 import {createMainNavigationTemplate} from "./view/main-navigation";
 import {createSortTemplate} from "./view/sort";
@@ -16,10 +17,6 @@ const FILMS_EXTRA_COUNT = 2;
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
 const filmsExtra = films.slice(0, FILMS_EXTRA_COUNT);
 const navigation = generateNavigation(films);
-
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
