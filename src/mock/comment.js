@@ -32,9 +32,8 @@ const generateMessage = () => {
   return getRandomElement(messages);
 };
 
-export const generateComment = (currentValue, index) => {
+export const generateComment = () => {
   return {
-    id: index + 1,
     name: generateName(),
     date: generateDate(),
     emoji: generateEmoji(),

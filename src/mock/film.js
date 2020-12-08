@@ -146,7 +146,7 @@ const generateAgeLimit = () => {
 const generateComments = () => {
   const commentCount = getRandomInteger(0, 5);
 
-  return new Array(commentCount).fill().map(generateComment);;
+  return new Array(commentCount).fill().map(generateComment);
 };
 
 export const generateFilm = () => {
