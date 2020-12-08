@@ -32,23 +32,12 @@ const generateMessage = () => {
   return getRandomElement(messages);
 };
 
-export const generateComments = (films) => {
-  const comments = [];
-  let counter = 1;
-
-  films.forEach((film) => {
-    film.comments = film.comments.map(() => {
-      const comment = {
-        id: counter++,
-        name: generateName(),
-        date: generateDate(),
-        emoji: generateEmoji(),
-        message: generateMessage()
-      };
-      comments.push(comment);
-      return comment.id;
-    });
-  });
-
-  return comments;
+export const generateComment = (currentValue, index) => {
+  return {
+    id: index + 1,
+    name: generateName(),
+    date: generateDate(),
+    emoji: generateEmoji(),
+    message: generateMessage()
+  };
 };

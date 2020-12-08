@@ -71,12 +71,12 @@ const createFilmsDetailAddComment = () => {
   </div>`;
 };
 
-export const createFilmDetailsTemplate = (film, comments) => {
-  const {poster, title, titleOriginal, rating, description, age, comments: commentsId, isWatch, isWatched, isFavorite} = film;
+export const createFilmDetailsTemplate = (film) => {
+  const {poster, title, titleOriginal, rating, description, age, comments, isWatch, isWatched, isFavorite} = film;
 
   const tableTemplate = createFilmDetailsTable(film);
 
-  const commentsTemplate = commentsId.length > 0
+  const commentsTemplate = comments.length > 0
     ? createFilmsDetailComments(comments)
     : ``;
 
@@ -129,7 +129,7 @@ export const createFilmDetailsTemplate = (film, comments) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsId.length}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
             ${commentsTemplate}

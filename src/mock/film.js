@@ -1,7 +1,7 @@
+import {getRandomElement, getRandomInteger} from "../utils";
+import {generateComment} from "../mock/comment";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
-import {getRandomElement, getRandomInteger} from "../utils";
-
 dayjs.extend(duration);
 
 const generatePoster = () => {
@@ -156,9 +156,9 @@ const generateAgeLimit = () => {
 };
 
 const generateComments = () => {
-  const commentsCount = getRandomInteger(0, 5);
+  const commentCount = getRandomInteger(0, 5);
 
-  return new Array(commentsCount).fill();
+  return new Array(commentCount).fill().map(generateComment);;
 };
 
 export const generateFilm = () => {

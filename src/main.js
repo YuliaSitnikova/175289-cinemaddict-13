@@ -7,7 +7,6 @@ import {createFilmDetailsTemplate} from "./view/film-details";
 import {createShowMoreButton} from "./view/show-more-button";
 import {createFooterStatisticTemplate} from "./view/footer-statictics";
 import {generateFilm} from "./mock/film";
-import {generateComments} from "./mock/comment";
 import {generateNavigation} from "./mock/navigation";
 
 const FILMS_COUNT = 18;
@@ -15,8 +14,7 @@ const FILMS_COUNT_PER_STEP = 5;
 const FILMS_EXTRA_COUNT = 2;
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
-const filmsExtra = new Array(FILMS_EXTRA_COUNT).fill().map(generateFilm);
-const comments = generateComments(films);
+const filmsExtra = films.slice(0, FILMS_EXTRA_COUNT);
 const navigation = generateNavigation(films);
 
 const render = (container, template, place = `beforeend`) => {
@@ -68,11 +66,7 @@ filmsExtraContainerElements.forEach((filmsExtraContainerElement) => {
   }
 });
 
-const filmComments = comments.filter(({id}) => {
-  return films[0].comments.includes(id);
-});
-
-render(siteFooterElement, createFilmDetailsTemplate(films[0], filmComments), `afterend`);
+render(siteFooterElement, createFilmDetailsTemplate(films[0]), `afterend`);
 
 const filmDetailElement = document.querySelector(`.film-details`);
 const filmDetailCloseButton = filmDetailElement.querySelector(`.film-details__close-btn`);
