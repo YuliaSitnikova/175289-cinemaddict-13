@@ -20,10 +20,17 @@ const FILMS_EXTRA_COUNT = 2;
 const renderFilm = (filmsContainerElement, film) => {
   const filmComponent = new FilmCardView(film);
   const filmPosterElement = filmComponent.getElement().querySelector(`.film-card__poster`);
+  const filmTitleElement = filmComponent.getElement().querySelector(`.film-card__title`);
+  const filmCommentsElement = filmComponent.getElement().querySelector(`.film-card__comments`);
 
-  filmPosterElement.addEventListener(`click`, () => {
+  const onFilmClick = (evt) => {
+    evt.preventDefault();
     renderFilmDetail(film);
-  });
+  };
+
+  filmPosterElement.addEventListener(`click`, onFilmClick);
+  filmTitleElement.addEventListener(`click`, onFilmClick);
+  filmCommentsElement.addEventListener(`click`, onFilmClick);
 
   render(filmsContainerElement, filmComponent.getElement(), RenderPlace.BEFOREEND);
 };
