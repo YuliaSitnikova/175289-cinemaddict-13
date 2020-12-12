@@ -35,14 +35,14 @@ const renderFilm = (filmsContainerElement, film) => {
   };
 
   const showFilmDetail = () => {
-    document.body.classList.add(`hide-overflow`);
-    document.body.appendChild(filmDetailComponent.getElement());
+    siteBodyElement.classList.add(`hide-overflow`);
+    siteBodyElement.appendChild(filmDetailComponent.getElement());
     document.addEventListener(`keydown`, onEscKeydown);
   };
 
   const hideFilmDetail = () => {
-    document.body.classList.remove(`hide-overflow`);
-    document.body.removeChild(filmDetailComponent.getElement());
+    siteBodyElement.classList.remove(`hide-overflow`);
+    siteBodyElement.removeChild(filmDetailComponent.getElement());
     document.removeEventListener(`keydown`, onEscKeydown);
   };
 
@@ -122,6 +122,7 @@ const filmsPopular = films.slice(0, FILMS_EXTRA_COUNT);
 const filmsCommented = films.slice(0, FILMS_EXTRA_COUNT);
 const navigationItems = generateNavigation(films);
 
+const siteBodyElement = document.body;
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
