@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
+import {createElement} from "../utils";
 import {EMOJIES} from "../constants";
+import dayjs from "dayjs";
 
 const createFilmDetailsTable = (film) => {
   const {director, writers, actors, release, duration, country, genres} = film;
@@ -145,9 +146,22 @@ const createFilmDetailsTemplate = (film) => {
 export default class FilmDetails {
   constructor(task) {
     this._task = task;
+    this._element = null;
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
   }
 }

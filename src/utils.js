@@ -1,3 +1,30 @@
+export const RenderPlace = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+export const renderElement = (container, template, place) => {
+  switch (place) {
+    case RenderPlace.AFTERBEGIN:
+      container.prepend(template);
+      break;
+    case RenderPlace.BEFOREEND:
+      container.append(template);
+      break;
+  }
+};
+
+export const renderTemplate = (container, template, place = `beforeend`) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 export const getRandomInteger = (a = 1, b = 0) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -17,24 +44,4 @@ export const getRandomElements = (elements, count) => {
     randomElements[i] = swap;
   }
   return randomElements.slice(0, count);
-};
-
-export const RenderPlace = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
-};
-
-export const renderElement = (container, template, place) => {
-  switch (place) {
-    case RenderPlace.AFTERBEGIN:
-      container.prepend(template);
-      break;
-    case RenderPlace.BEFOREEND:
-      container.append(template);
-      break;
-  }
-};
-
-export const renderTemplate = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
 };

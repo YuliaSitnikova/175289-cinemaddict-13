@@ -1,3 +1,5 @@
+import {createElement} from "../utils";
+
 const createMainNavigationItem = (item, isActive) => {
   const {name, count} = item;
   const isAll = name === `all`;
@@ -21,9 +23,22 @@ const createMainNavigationTemplate = (items) => {
 export default class MainNavigation {
   constructor(items) {
     this._items = items;
+    this._element = null;
   }
 
   getTemplate() {
     return createMainNavigationTemplate(this._items);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
   }
 }

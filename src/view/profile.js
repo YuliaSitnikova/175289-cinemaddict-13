@@ -1,3 +1,5 @@
+import {createElement} from "../utils";
+
 const createProfileTemplate = () => {
   return `<section class="header__profile profile">
     <p class="profile__rating">Movie Buff</p>
@@ -7,10 +9,22 @@ const createProfileTemplate = () => {
 
 export default class Profile {
   constructor() {
-
+    this._element = null;
   }
 
   getTemplate() {
     return createProfileTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElemet() {
+    this._element = null;
   }
 }
