@@ -19,32 +19,47 @@ const FILMS_EXTRA_COUNT = 2;
 
 const renderFilm = (filmsContainerElement, film) => {
   const filmComponent = new FilmCardView(film);
+  const filmDetailComponent = new FilmDetailView(film);
+
   const filmPosterElement = filmComponent.getElement().querySelector(`.film-card__poster`);
   const filmTitleElement = filmComponent.getElement().querySelector(`.film-card__title`);
   const filmCommentsElement = filmComponent.getElement().querySelector(`.film-card__comments`);
 
-  const onFilmClick = (evt) => {
-    evt.preventDefault();
-    renderFilmDetail(film);
+  const filmDetailCloseButtonElement = filmDetailComponent.getElement().querySelector(`.film-details__close-btn`);
+
+  const onEscKeydown = (evt) => {
+    if (evt.key === `Esc` || evt.key === `Escape`) {
+      evt.preventDefault();
+      hideFilmDetail();
+    }
   };
 
-  filmPosterElement.addEventListener(`click`, onFilmClick);
-  filmTitleElement.addEventListener(`click`, onFilmClick);
-  filmCommentsElement.addEventListener(`click`, onFilmClick);
+  const showFilmDetail = () => {
+    document.body.classList.add(`hide-overflow`);
+    document.body.appendChild(filmDetailComponent.getElement());
+    document.addEventListener(`keydown`, onEscKeydown);
+  };
 
-  render(filmsContainerElement, filmComponent.getElement(), RenderPlace.BEFOREEND);
-};
+  const hideFilmDetail = () => {
+    document.body.classList.remove(`hide-overflow`);
+    document.body.removeChild(filmDetailComponent.getElement());
+    document.removeEventListener(`keydown`, onEscKeydown);
+  };
 
-const renderFilmDetail = (film) => {
-  const filmDetailComponent = new FilmDetailView(film);
-  const filmDetailCloseButton = filmDetailComponent.getElement().querySelector(`.film-details__close-btn`);
-
-  filmDetailCloseButton.addEventListener(`click`, () => {
-    filmDetailComponent.getElement().remove();
-    filmDetailComponent.removeElement();
+  filmPosterElement.addEventListener(`click`, () => {
+    showFilmDetail();
+  });
+  filmTitleElement.addEventListener(`click`, () => {
+    showFilmDetail();
+  });
+  filmCommentsElement.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+    showFilmDetail();
   });
 
-  render(document.body, filmDetailComponent.getElement(), RenderPlace.BEFOREEND);
+  filmDetailCloseButtonElement.addEventListener(`click`, hideFilmDetail);
+
+  render(filmsContainerElement, filmComponent.getElement(), RenderPlace.BEFOREEND);
 };
 
 const renderFilmsList = () => {
