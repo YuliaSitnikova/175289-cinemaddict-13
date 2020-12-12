@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {poster, title, rating, release, duration, genres, description, comments: commentsIds, isWatch, isWatched, isFavorite} = film;
 
   const watchlistClassName = isWatch
@@ -33,3 +33,13 @@ export const createFilmCardTemplate = (film) => {
     </div>
   </article>`;
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+}

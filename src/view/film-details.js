@@ -71,7 +71,7 @@ const createFilmsDetailAddComment = () => {
   </div>`;
 };
 
-export const createFilmDetailsTemplate = (film) => {
+const createFilmDetailsTemplate = (film) => {
   const {poster, title, titleOriginal, rating, description, age, comments, isWatch, isWatched, isFavorite} = film;
 
   const tableTemplate = createFilmDetailsTable(film);
@@ -141,3 +141,13 @@ export const createFilmDetailsTemplate = (film) => {
     </form>
   </section>`;
 };
+
+export default class FilmDetails {
+  constructor(task) {
+    this._task = task;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._task);
+  }
+}

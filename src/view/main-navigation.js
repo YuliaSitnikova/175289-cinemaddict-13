@@ -7,13 +7,23 @@ const createMainNavigationItem = (item, isActive) => {
   </a>`;
 };
 
-export const createMainNavigationTemplate = (navigationItems) => {
-  const navigationItemsTemplate = navigationItems.map((item, index) => createMainNavigationItem(item, index === 0)).join(``);
+const createMainNavigationTemplate = (items) => {
+  const itemsTemplate = items.map((item, index) => createMainNavigationItem(item, index === 0)).join(``);
 
   return `<nav class="main-navigation">
     <div class="main-navigation__items">
-      ${navigationItemsTemplate}
+      ${itemsTemplate}
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>`;
 };
+
+export default class MainNavigation {
+  constructor(items) {
+    this._items = items;
+  }
+
+  getTemplate() {
+    return createMainNavigationTemplate(this._items);
+  }
+}

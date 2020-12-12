@@ -1,4 +1,4 @@
-export const createStatisticTemplate = () => {
+const createStatisticTemplate = () => {
   return `<section class="statistic">
     <p class="statistic__rank">
       Your rank
@@ -46,3 +46,13 @@ export const createStatisticTemplate = () => {
 
   </section>`;
 };
+
+export default class Statistic {
+  constructor() {
+
+  }
+
+  getTemplate() {
+    return createStatisticTemplate();
+  }
+}
