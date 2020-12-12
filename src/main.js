@@ -18,16 +18,26 @@ const FILMS_COUNT_PER_STEP = 5;
 const FILMS_EXTRA_COUNT = 2;
 
 const renderFilm = (filmsContainerElement, film) => {
-  render(filmsContainerElement, new FilmCardView(film).getElement(), RenderPlace.BEFOREEND);
+  const filmComponent = new FilmCardView(film);
+  const filmPosterElement = filmComponent.getElement().querySelector(`.film-card__poster`);
+
+  filmPosterElement.addEventListener(`click`, () => {
+    renderFilmDetail(film);
+  });
+
+  render(filmsContainerElement, filmComponent.getElement(), RenderPlace.BEFOREEND);
 };
 
-const renderFilmDetail = () => {
-  render(document.body, new FilmDetailView(films[0]).getElement(), RenderPlace.BEFOREEND);
+const renderFilmDetail = (film) => {
+  const filmDetailComponent = new FilmDetailView(film);
+  const filmDetailCloseButton = filmDetailComponent.getElement().querySelector(`.film-details__close-btn`);
 
-  const filmDetailElement = document.querySelector(`.film-details`);
-  const filmDetailCloseButton = filmDetailElement.querySelector(`.film-details__close-btn`);
+  filmDetailCloseButton.addEventListener(`click`, () => {
+    filmDetailComponent.getElement().remove();
+    filmDetailComponent.removeElement();
+  });
 
-  filmDetailCloseButton.addEventListener(`click`, () => filmDetailElement.remove());
+  render(document.body, filmDetailComponent.getElement(), RenderPlace.BEFOREEND);
 };
 
 const renderFilmsList = () => {
