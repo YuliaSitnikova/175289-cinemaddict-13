@@ -3,7 +3,7 @@ export const RenderPlace = {
   BEFOREEND: `beforeend`
 };
 
-export const renderElement = (container, template, place) => {
+export const render = (container, template, place) => {
   switch (place) {
     case RenderPlace.AFTERBEGIN:
       container.prepend(template);
