@@ -49,7 +49,7 @@ const createStatisticTemplate = () => {
   </section>`;
 };
 
-export default class Statistic {
+export default class Statistics {
   constructor() {
     this._element = null;
   }

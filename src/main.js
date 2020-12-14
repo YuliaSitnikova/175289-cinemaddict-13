@@ -11,7 +11,7 @@ import FilmsCommentedListView from "./view/films-commented-list";
 import FilmCardView from "./view/film-card";
 import FilmDetailView from "./view/film-details";
 import ShowMoreButtonView from "./view/show-more-button";
-import FotterStatisticView from "./view/footer-statictics";
+import FooterStatisticsView from "./view/footer-statictics";
 
 const FILMS_COUNT = 18;
 const FILMS_COUNT_PER_STEP = 5;
@@ -30,7 +30,7 @@ const renderFilm = (filmsContainerElement, film) => {
   const onEscKeydown = (evt) => {
     if (evt.key === `Esc` || evt.key === `Escape`) {
       evt.preventDefault();
-      hideFilmDetail();
+      closeFilmDetail();
     }
   };
 
@@ -40,7 +40,7 @@ const renderFilm = (filmsContainerElement, film) => {
     document.addEventListener(`keydown`, onEscKeydown);
   };
 
-  const hideFilmDetail = () => {
+  const closeFilmDetail = () => {
     siteBodyElement.classList.remove(`hide-overflow`);
     siteBodyElement.removeChild(filmDetailComponent.getElement());
     document.removeEventListener(`keydown`, onEscKeydown);
@@ -57,7 +57,7 @@ const renderFilm = (filmsContainerElement, film) => {
     showFilmDetail();
   });
 
-  filmDetailCloseButtonElement.addEventListener(`click`, hideFilmDetail);
+  filmDetailCloseButtonElement.addEventListener(`click`, closeFilmDetail);
 
   render(filmsContainerElement, filmComponent.getElement(), RenderPlace.BEFOREEND);
 };
@@ -140,4 +140,4 @@ renderFilmsList();
 renderFilmsPopularList();
 renderFilmsCommentedList();
 
-render(statisticsElement, new FotterStatisticView(FILMS_COUNT).getElement(), RenderPlace.BEFOREEND);
+render(statisticsElement, new FooterStatisticsView(FILMS_COUNT).getElement(), RenderPlace.BEFOREEND);

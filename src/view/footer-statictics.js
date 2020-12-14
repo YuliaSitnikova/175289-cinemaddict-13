@@ -4,7 +4,7 @@ const createFooterStatisticTemplate = (count) => {
   return `<p>${count} movies inside</p>`;
 };
 
-export default class FotterStatistic {
+export default class FooterStatistics {
   constructor(count) {
     this._count = count;
     this._element = null;
