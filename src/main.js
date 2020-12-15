@@ -10,12 +10,20 @@ import FilmsPopularListView from "./view/films-popular-list";
 import FilmsCommentedListView from "./view/films-commented-list";
 import FilmCardView from "./view/film-card";
 import FilmDetailView from "./view/film-details";
+import NoFilmsView from "./view/no-films";
 import ShowMoreButtonView from "./view/show-more-button";
 import FooterStatisticsView from "./view/footer-statictics";
 
-const FILMS_COUNT = 18;
+const FILMS_COUNT = 0;
 const FILMS_COUNT_PER_STEP = 5;
 const FILMS_EXTRA_COUNT = 2;
+
+const siteBodyElement = document.body;
+const siteHeaderElement = document.querySelector(`.header`);
+const siteMainElement = document.querySelector(`.main`);
+const siteFooterElement = document.querySelector(`.footer`);
+const statisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
+
 
 const renderFilm = (filmsContainerElement, film) => {
   const filmComponent = new FilmCardView(film);
@@ -124,22 +132,26 @@ const filmsPopular = films.slice(0, FILMS_EXTRA_COUNT);
 const filmsCommented = films.slice(0, FILMS_EXTRA_COUNT);
 const navigationItems = generateNavigation(films);
 
-const siteBodyElement = document.body;
-const siteHeaderElement = document.querySelector(`.header`);
-const siteMainElement = document.querySelector(`.main`);
-const siteFooterElement = document.querySelector(`.footer`);
-const statisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
+if (films.length !== 0) {
+  render(siteHeaderElement, new ProfileView().getElement(), RenderPlace.BEFOREEND);
+}
 
-render(siteHeaderElement, new ProfileView().getElement(), RenderPlace.BEFOREEND);
 render(siteMainElement, new MainNavigationVeiw(navigationItems).getElement(), RenderPlace.BEFOREEND);
-render(siteMainElement, new SortView().getElement(), RenderPlace.BEFOREEND);
+
+if (films.length !== 0) {
+  render(siteMainElement, new SortView().getElement(), RenderPlace.BEFOREEND);
+}
 
 const filmsComponent = new FilmsView();
 
-render(siteMainElement, filmsComponent.getElement(), RenderPlace.BEFOREEND);
+if (films.length !== 0) {
+  renderFilmsList();
+  renderFilmsPopularList();
+  renderFilmsCommentedList();
+} else {
+  render(filmsComponent.getElement(), new NoFilmsView().getElement(), RenderPlace.BEFOREEND);
+}
 
-renderFilmsList();
-renderFilmsPopularList();
-renderFilmsCommentedList();
+render(siteMainElement, filmsComponent.getElement(), RenderPlace.BEFOREEND);
 
 render(statisticsElement, new FooterStatisticsView(FILMS_COUNT).getElement(), RenderPlace.BEFOREEND);
