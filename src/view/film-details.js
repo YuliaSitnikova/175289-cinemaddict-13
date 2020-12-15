@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
+import {createElement} from "../utils";
 import {EMOJIES} from "../constants";
+import dayjs from "dayjs";
 
 const createFilmDetailsTable = (film) => {
   const {director, writers, actors, release, duration, country, genres} = film;
@@ -71,7 +72,7 @@ const createFilmsDetailAddComment = () => {
   </div>`;
 };
 
-export const createFilmDetailsTemplate = (film) => {
+const createFilmDetailsTemplate = (film) => {
   const {poster, title, titleOriginal, rating, description, age, comments, isWatch, isWatched, isFavorite} = film;
 
   const tableTemplate = createFilmDetailsTable(film);
@@ -141,3 +142,26 @@ export const createFilmDetailsTemplate = (film) => {
     </form>
   </section>`;
 };
+
+export default class FilmDetails {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
