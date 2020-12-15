@@ -57,7 +57,9 @@ const renderFilm = (filmsContainerElement, film) => {
     showFilmDetail();
   });
 
-  filmDetailCloseButtonElement.addEventListener(`click`, closeFilmDetail);
+  filmDetailCloseButtonElement.addEventListener(`click`, () => {
+    closeFilmDetail();
+  });
 
   render(filmsContainerElement, filmComponent.getElement(), RenderPlace.BEFOREEND);
 };
