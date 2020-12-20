@@ -24,7 +24,6 @@ const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 const statisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
 
-
 const renderFilm = (filmsContainerElement, film) => {
   const filmComponent = new FilmCardView(film);
   const filmDetailComponent = new FilmDetailView(film);
@@ -69,7 +68,7 @@ const renderFilm = (filmsContainerElement, film) => {
     closeFilmDetail();
   });
 
-  render(filmsContainerElement, filmComponent.getElement(), RenderPlace.BEFOREEND);
+  render(filmsContainerElement, filmComponent, RenderPlace.BEFOREEND);
 };
 
 const renderFilmsList = () => {
@@ -85,7 +84,7 @@ const renderFilmsList = () => {
 
     const showMoreButtonComponent = new ShowMoreButtonView();
 
-    render(filmsListComponent.getElement(), showMoreButtonComponent.getElement(), RenderPlace.BEFOREEND);
+    render(filmsListComponent, showMoreButtonComponent, RenderPlace.BEFOREEND);
 
     showMoreButtonComponent.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
@@ -102,7 +101,7 @@ const renderFilmsList = () => {
     });
   }
 
-  render(filmsComponent.getElement(), filmsListComponent.getElement(), RenderPlace.BEFOREEND);
+  render(filmsComponent, filmsListComponent, RenderPlace.BEFOREEND);
 };
 
 const renderFilmsPopularList = () => {
@@ -113,7 +112,7 @@ const renderFilmsPopularList = () => {
     renderFilm(filmsContainerElement, filmsPopular[i]);
   }
 
-  render(filmsComponent.getElement(), filmsPopularListComponent.getElement(), RenderPlace.BEFOREEND);
+  render(filmsComponent, filmsPopularListComponent, RenderPlace.BEFOREEND);
 };
 
 const renderFilmsCommentedList = () => {
@@ -124,7 +123,7 @@ const renderFilmsCommentedList = () => {
     renderFilm(filmsContainerElement, filmsCommented[i]);
   }
 
-  render(filmsComponent.getElement(), filmsCommentedListComponent.getElement(), RenderPlace.BEFOREEND);
+  render(filmsComponent, filmsCommentedListComponent, RenderPlace.BEFOREEND);
 };
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
@@ -133,13 +132,13 @@ const filmsCommented = films.slice(0, FILMS_EXTRA_COUNT);
 const navigationItems = generateNavigation(films);
 
 if (films.length !== 0) {
-  render(siteHeaderElement, new ProfileView().getElement(), RenderPlace.BEFOREEND);
+  render(siteHeaderElement, new ProfileView(), RenderPlace.BEFOREEND);
 }
 
-render(siteMainElement, new MainNavigationVeiw(navigationItems).getElement(), RenderPlace.BEFOREEND);
+render(siteMainElement, new MainNavigationVeiw(navigationItems), RenderPlace.BEFOREEND);
 
 if (films.length !== 0) {
-  render(siteMainElement, new SortView().getElement(), RenderPlace.BEFOREEND);
+  render(siteMainElement, new SortView(), RenderPlace.BEFOREEND);
 }
 
 const filmsComponent = new FilmsView();
@@ -149,9 +148,9 @@ if (films.length !== 0) {
   renderFilmsPopularList();
   renderFilmsCommentedList();
 } else {
-  render(filmsComponent.getElement(), new NoFilmsView().getElement(), RenderPlace.BEFOREEND);
+  render(filmsComponent, new NoFilmsView(), RenderPlace.BEFOREEND);
 }
 
-render(siteMainElement, filmsComponent.getElement(), RenderPlace.BEFOREEND);
+render(siteMainElement, filmsComponent, RenderPlace.BEFOREEND);
 
-render(statisticsElement, new FooterStatisticsView(FILMS_COUNT).getElement(), RenderPlace.BEFOREEND);
+render(statisticsElement, new FooterStatisticsView(FILMS_COUNT), RenderPlace.BEFOREEND);
