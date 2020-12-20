@@ -28,12 +28,6 @@ const renderFilm = (filmsContainerElement, film) => {
   const filmComponent = new FilmCardView(film);
   const filmDetailComponent = new FilmDetailView(film);
 
-  const filmPosterElement = filmComponent.getElement().querySelector(`.film-card__poster`);
-  const filmTitleElement = filmComponent.getElement().querySelector(`.film-card__title`);
-  const filmCommentsElement = filmComponent.getElement().querySelector(`.film-card__comments`);
-
-  const filmDetailCloseButtonElement = filmDetailComponent.getElement().querySelector(`.film-details__close-btn`);
-
   const onEscKeydown = (evt) => {
     if (evt.key === `Esc` || evt.key === `Escape`) {
       evt.preventDefault();
@@ -53,18 +47,11 @@ const renderFilm = (filmsContainerElement, film) => {
     document.removeEventListener(`keydown`, onEscKeydown);
   };
 
-  filmPosterElement.addEventListener(`click`, () => {
-    showFilmDetail();
-  });
-  filmTitleElement.addEventListener(`click`, () => {
-    showFilmDetail();
-  });
-  filmCommentsElement.addEventListener(`click`, (evt) => {
-    evt.preventDefault();
+  filmComponent.setClickHandler(() => {
     showFilmDetail();
   });
 
-  filmDetailCloseButtonElement.addEventListener(`click`, () => {
+  filmDetailComponent.setClickHandler(() => {
     closeFilmDetail();
   });
 
@@ -86,8 +73,7 @@ const renderFilmsList = () => {
 
     render(filmsListComponent, showMoreButtonComponent, RenderPlace.BEFOREEND);
 
-    showMoreButtonComponent.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
+    showMoreButtonComponent.setClickHandler(() => {
       films
         .slice(renderedFilmCount, renderedFilmCount + FILMS_COUNT_PER_STEP)
         .forEach((film) => renderFilm(filmsContainerElement, film));
