@@ -14,7 +14,7 @@ import NoFilmsView from "./view/no-films";
 import ShowMoreButtonView from "./view/show-more-button";
 import FooterStatisticsView from "./view/footer-statictics";
 
-const FILMS_COUNT = 0;
+const FILMS_COUNT = 18;
 const FILMS_COUNT_PER_STEP = 5;
 const FILMS_EXTRA_COUNT = 2;
 
