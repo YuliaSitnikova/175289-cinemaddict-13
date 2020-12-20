@@ -147,7 +147,6 @@ export default class FilmDetails extends AbstractView {
   constructor(task) {
     super();
     this._task = task;
-    this._callback = {};
     this._clickHandler = this._clickHandler.bind(this);
   }
 

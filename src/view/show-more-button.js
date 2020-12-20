@@ -7,7 +7,6 @@ const createShowMoreButton = () => {
 export default class ShowMoreButton extends AbstractView {
   constructor() {
     super();
-    this._callback = {};
     this._clickHandler = this._clickHandler.bind(this);
   }
 
