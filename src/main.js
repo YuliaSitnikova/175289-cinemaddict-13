@@ -1,6 +1,3 @@
-import {render, RenderPlace} from "./utils";
-import {generateFilm} from "./mock/film";
-import {generateNavigation} from "./mock/navigation";
 import ProfileView from "./view/profile.js";
 import MainNavigationVeiw from "./view/main-navigation";
 import SortView from "./view/sort";
@@ -13,6 +10,9 @@ import FilmDetailView from "./view/film-details";
 import NoFilmsView from "./view/no-films";
 import ShowMoreButtonView from "./view/show-more-button";
 import FooterStatisticsView from "./view/footer-statictics";
+import {generateFilm} from "./mock/film";
+import {generateNavigation} from "./mock/navigation";
+import {render, RenderPlace} from "./utils/render";
 
 const FILMS_COUNT = 18;
 const FILMS_COUNT_PER_STEP = 5;

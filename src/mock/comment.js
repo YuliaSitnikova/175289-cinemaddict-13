@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import {EMOJIES} from "../constants";
-import {getRandomElement, getRandomInteger} from "../utils";
+import {getRandomElement, getRandomInteger} from "../utils/common";
 
 const generateName = () => {
   const names = [
