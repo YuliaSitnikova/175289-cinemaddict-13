@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 
 const createMainNavigationItem = (item, isActive) => {
   const {name, count} = item;
@@ -20,25 +20,13 @@ const createMainNavigationTemplate = (items) => {
   </nav>`;
 };
 
-export default class MainNavigation {
+export default class MainNavigation extends AbstractView {
   constructor(items) {
+    super();
     this._items = items;
-    this._element = null;
   }
 
   getTemplate() {
     return createMainNavigationTemplate(this._items);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
