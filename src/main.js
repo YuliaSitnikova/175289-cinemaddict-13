@@ -47,13 +47,9 @@ const renderFilm = (filmsContainerElement, film) => {
     document.removeEventListener(`keydown`, onEscKeydown);
   };
 
-  filmComponent.setClickHandler(() => {
-    showFilmDetail();
-  });
+  filmComponent.setClickHandler(showFilmDetail);
 
-  filmDetailComponent.setClickHandler(() => {
-    closeFilmDetail();
-  });
+  filmDetailComponent.setClickHandler(closeFilmDetail);
 
   render(filmsContainerElement, filmComponent, RenderPlace.BEFOREEND);
 };
