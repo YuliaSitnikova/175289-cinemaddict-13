@@ -1,4 +1,4 @@
-import {getRandomElement, getRandomInteger, getRandomElements} from "../utils";
+import {getRandomElement, getRandomInteger, getRandomElements} from "../utils/common";
 import {generateComment} from "../mock/comment";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
