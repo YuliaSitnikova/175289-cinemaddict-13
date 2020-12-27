@@ -3,10 +3,9 @@ import FilmsView from "../view/films";
 import FilmsListView from "../view/films-list";
 import FilmsPopularListView from "../view/films-popular-list";
 import FilmsCommentedListView from "../view/films-commented-list";
-import FilmCardView from "../view/film-card";
-import FilmDetailView from "../view/film-details";
 import NoFilmsView from "../view/no-films";
 import ShowMoreButtonView from "../view/show-more-button";
+import FilmPresenter from "./film";
 import {render, RenderPlace} from "../utils/render";
 
 const FILMS_COUNT_PER_STEP = 5;
@@ -46,35 +45,9 @@ export default class Films {
     render(this._filmsContainer, this._filmsComponent, RenderPlace.BEFOREEND);
   }
 
-  _renderFilm(filmsContainerElement, film) {
-    const filmComponent = new FilmCardView(film);
-    const filmDetailComponent = new FilmDetailView(film);
-    const siteBodyElement = document.body;
-
-    const onEscKeydown = (evt) => {
-      if (evt.key === `Esc` || evt.key === `Escape`) {
-        evt.preventDefault();
-        closeFilmDetail();
-      }
-    };
-
-    const showFilmDetail = () => {
-      siteBodyElement.classList.add(`hide-overflow`);
-      siteBodyElement.appendChild(filmDetailComponent.getElement());
-      document.addEventListener(`keydown`, onEscKeydown);
-    };
-
-    const closeFilmDetail = () => {
-      siteBodyElement.classList.remove(`hide-overflow`);
-      siteBodyElement.removeChild(filmDetailComponent.getElement());
-      document.removeEventListener(`keydown`, onEscKeydown);
-    };
-
-    filmComponent.setClickHandler(showFilmDetail);
-
-    filmDetailComponent.setClickHandler(closeFilmDetail);
-
-    render(filmsContainerElement, filmComponent, RenderPlace.BEFOREEND);
+  _renderFilm(filmsListContainer, film) {
+    const filmPresenter = new FilmPresenter(filmsListContainer);
+    filmPresenter.init(film);
   }
 
   _renderFilms(from, to) {
