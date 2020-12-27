@@ -14,7 +14,6 @@ const FILMS_EXTRA_COUNT = 2;
 
 export default class Films {
   constructor(filmsContainer) {
-    this._filmsContainer = filmsContainer;
     this._sortComponent = new SortView();
     this._filmsComponent = new FilmsView();
     this._filmsListComponent = new FilmsListView();
@@ -24,10 +23,12 @@ export default class Films {
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
     this._films = null;
+    this._filmsContainer = filmsContainer;
+    this._filmsListContainer = this._filmsListComponent.getElement().querySelector(`.films-list__container`);
+    this._filmsPopularListContainer = this._filmsPopularListComponent.getElement().querySelector(`.films-list__container`);
+    this._filmsCommentedListContainer = this._filmsCommentedListComponent.getElement().querySelector(`.films-list__container`);
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
-
-    this._filmsListContainer = this._filmsListComponent.getElement().querySelector(`.films-list__container`);
   }
 
   init(films) {
@@ -112,10 +113,8 @@ export default class Films {
   _renderPopularFilmsList() {
     const filmsPopular = this._films.slice(0, FILMS_EXTRA_COUNT);
 
-    const filmsContainerElement = this._filmsPopularListComponent.getElement().querySelector(`.films-list__container`);
-
     for (let i = 0; i < FILMS_EXTRA_COUNT; i++) {
-      this._renderFilm(filmsContainerElement, filmsPopular[i]);
+      this._renderFilm(this._filmsPopularListContainer, filmsPopular[i]);
     }
 
     render(this._filmsComponent, this._filmsPopularListComponent, RenderPlace.BEFOREEND);
@@ -124,10 +123,8 @@ export default class Films {
   _renderCommentedFilmsList() {
     const filmsCommented = this._films.slice(0, FILMS_EXTRA_COUNT);
 
-    const filmsContainerElement = this._filmsCommentedListComponent.getElement().querySelector(`.films-list__container`);
-
     for (let i = 0; i < FILMS_EXTRA_COUNT; i++) {
-      this._renderFilm(filmsContainerElement, filmsCommented[i]);
+      this._renderFilm(this._filmsCommentedListContainer, filmsCommented[i]);
     }
 
     render(this._filmsComponent, this._filmsCommentedListComponent, RenderPlace.BEFOREEND);
