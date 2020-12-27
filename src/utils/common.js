@@ -18,3 +18,13 @@ export const getRandomElements = (elements, count) => {
   }
   return randomElements.slice(0, count);
 };
+
+export const update = (items, updateItem) => {
+  const index = items.findIndex((item) => item.id === updateItem.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [...items.slice(0, index), updateItem, ...items.slice(index + 1)];
+};

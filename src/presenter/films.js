@@ -6,6 +6,7 @@ import FilmsCommentedListView from "../view/films-commented-list";
 import NoFilmsView from "../view/no-films";
 import ShowMoreButtonView from "../view/show-more-button";
 import FilmPresenter from "./film";
+import {update} from "../utils/common";
 import {render, RenderPlace} from "../utils/render";
 
 const FILMS_COUNT_PER_STEP = 5;
@@ -13,6 +14,10 @@ const FILMS_EXTRA_COUNT = 2;
 
 export default class Films {
   constructor(filmsContainer) {
+    this._filmsContainer = filmsContainer;
+    this._filmPresenter = new Map();
+    this._films = null;
+    this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._sortComponent = new SortView();
     this._filmsComponent = new FilmsView();
     this._filmsListComponent = new FilmsListView();
@@ -20,13 +25,7 @@ export default class Films {
     this._filmsCommentedListComponent = new FilmsCommentedListView();
     this._noFilmsComponent = new NoFilmsView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
-
-    this._films = null;
-    this._filmsContainer = filmsContainer;
-    this._filmsListContainer = this._filmsListComponent.getElement().querySelector(`.films-list__container`);
-    this._filmsPopularListContainer = this._filmsPopularListComponent.getElement().querySelector(`.films-list__container`);
-    this._filmsCommentedListContainer = this._filmsCommentedListComponent.getElement().querySelector(`.films-list__container`);
-    this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
+    this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
@@ -38,32 +37,16 @@ export default class Films {
     } else {
       this._renderSort();
       this._renderFilmsList();
-      this._renderPopularFilmsList();
-      this._renderCommentedFilmsList();
+      // this._renderPopularFilmsList();
+      // this._renderCommentedFilmsList();
     }
 
     render(this._filmsContainer, this._filmsComponent, RenderPlace.BEFOREEND);
   }
 
-  _renderFilm(filmsListContainer, film) {
-    const filmPresenter = new FilmPresenter(filmsListContainer);
-    filmPresenter.init(film);
-  }
-
-  _renderFilms(from, to) {
-    this._films
-      .slice(from, to)
-      .forEach((film) => this._renderFilm(this._filmsListContainer, film));
-  }
-
-  _renderFilmsList() {
-    this._renderFilms(0, Math.min(this._films.length, FILMS_COUNT_PER_STEP));
-
-    if (this._films.length > FILMS_COUNT_PER_STEP) {
-      this._renderShowMoreButton();
-    }
-
-    render(this._filmsComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
+  _handleFilmChange(film) {
+    this._films = update(this._films, film);
+    this._filmPresenter.get(film.id).update(film);
   }
 
   _handleShowMoreButtonClick() {
@@ -77,6 +60,28 @@ export default class Films {
     }
   }
 
+  _renderFilm(filmsListComponent, film) {
+    const filmPresenter = new FilmPresenter(filmsListComponent, this._handleFilmChange);
+    filmPresenter.init(film);
+    this._filmPresenter.set(film.id, filmPresenter);
+  }
+
+  _renderFilms(from, to) {
+    this._films
+      .slice(from, to)
+      .forEach((film) => this._renderFilm(this._filmsListComponent, film));
+  }
+
+  _renderFilmsList() {
+    this._renderFilms(0, Math.min(this._films.length, FILMS_COUNT_PER_STEP));
+
+    if (this._films.length > FILMS_COUNT_PER_STEP) {
+      this._renderShowMoreButton();
+    }
+
+    render(this._filmsComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
+  }
+
   _renderShowMoreButton() {
     render(this._filmsListComponent, this._showMoreButtonComponent, RenderPlace.BEFOREEND);
 
@@ -87,7 +92,7 @@ export default class Films {
     const filmsPopular = this._films.slice(0, FILMS_EXTRA_COUNT);
 
     for (let i = 0; i < FILMS_EXTRA_COUNT; i++) {
-      this._renderFilm(this._filmsPopularListContainer, filmsPopular[i]);
+      this._renderFilm(this._filmsPopularListComponent, filmsPopular[i]);
     }
 
     render(this._filmsComponent, this._filmsPopularListComponent, RenderPlace.BEFOREEND);
@@ -97,7 +102,7 @@ export default class Films {
     const filmsCommented = this._films.slice(0, FILMS_EXTRA_COUNT);
 
     for (let i = 0; i < FILMS_EXTRA_COUNT; i++) {
-      this._renderFilm(this._filmsCommentedListContainer, filmsCommented[i]);
+      this._renderFilm(this._filmsCommentedListComponent, filmsCommented[i]);
     }
 
     render(this._filmsComponent, this._filmsCommentedListComponent, RenderPlace.BEFOREEND);
