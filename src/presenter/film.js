@@ -3,14 +3,16 @@ import FilmPopupView from "../view/film-popup";
 import {RenderPlace, render, remove, replace} from "../utils/render";
 
 export default class Film {
-  constructor(filmsListComponent, changeData) {
+  constructor(filmsListComponent, changeData, changeMode) {
     this._filmsListComponent = filmsListComponent;
     this._changeData = changeData;
+    this._changeMode = changeMode;
     this._filmsListContainer = this._filmsListComponent.getElement().querySelector(`.films-list__container`);
     this._filmPopupContainer = document.body;
     this._film = null;
     this._filmComponent = null;
     this._filmPopupComponent = null;
+    this._isOpen = false;
     this._handleOpenClick = this._handleOpenClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
@@ -48,6 +50,12 @@ export default class Film {
     remove(prevFilmPopupComponent);
   }
 
+  closePopup() {
+    if (this._isOpen) {
+      this._closePopup();
+    }
+  }
+
   _setHandlers() {
     this._filmComponent.setOpenClickHandler(this._handleOpenClick);
     this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
@@ -62,24 +70,27 @@ export default class Film {
   _onEscKeydown(evt) {
     if (evt.key === `Esc` || evt.key === `Escape`) {
       evt.preventDefault();
-      this._closeFilmDetail();
+      this._closePopup();
     }
   }
 
-  _showFilmDetail() {
+  _showPopup() {
+    this._changeMode();
     this._filmPopupContainer.classList.add(`hide-overflow`);
     this._filmPopupContainer.appendChild(this._filmPopupComponent.getElement());
     document.addEventListener(`keydown`, this._onEscKeydown);
+    this._isOpen = true;
   }
 
-  _closeFilmDetail() {
+  _closePopup() {
     this._filmPopupContainer.classList.remove(`hide-overflow`);
     this._filmPopupContainer.removeChild(this._filmPopupComponent.getElement());
     document.removeEventListener(`keydown`, this._onEscKeydown);
+    this._isOpen = false;
   }
 
   _handleOpenClick() {
-    this._showFilmDetail();
+    this._showPopup();
   }
 
   _handleWatchlistClick() {
@@ -95,6 +106,6 @@ export default class Film {
   }
 
   _handleCloseClick() {
-    this._closeFilmDetail();
+    this._closePopup();
   }
 }
