@@ -4,6 +4,10 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 
+const generateId = () => {
+  return Date.now() + parseInt(Math.random() * 10000, 10);
+};
+
 const generatePoster = () => {
   const posters = [
     `./images/posters/made-for-each-other.png`,
@@ -151,6 +155,7 @@ const generateComments = () => {
 
 export const generateFilm = () => {
   return {
+    id: generateId(),
     poster: generatePoster(),
     title: generateTitle(),
     titleOriginal: generateTitle(),
