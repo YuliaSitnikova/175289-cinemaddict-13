@@ -1,9 +1,9 @@
-import AbstractView from "./abstract";
+import SmartView from "./smart";
 import {EMOJIES} from "../constants";
 import dayjs from "dayjs";
 
-const createFilmDetailsTable = (film) => {
-  const {director, writers, actors, release, duration, country, genres} = film;
+const createFilmDetailsTable = (data) => {
+  const {director, writers, actors, release, duration, country, genres} = data;
 
   return `<table class="film-details__table">
     <tr class="film-details__row">
@@ -72,14 +72,12 @@ const createFilmsDetailAddComment = () => {
   </div>`;
 };
 
-const createFilmDetailsTemplate = (film) => {
-  const {poster, title, titleOriginal, rating, description, age, comments, isWatch, isWatched, isFavorite} = film;
+const createFilmDetailsTemplate = (data) => {
+  const {poster, title, titleOriginal, rating, description, age, comments, isWatch, isWatched, isFavorite, showComments} = data;
 
-  const tableTemplate = createFilmDetailsTable(film);
+  const tableTemplate = createFilmDetailsTable(data);
 
-  const commentsTemplate = comments.length > 0
-    ? createFilmsDetailComments(comments)
-    : ``;
+  const commentsTemplate = showComments ? createFilmsDetailComments(comments) : ``;
 
   const addCommentTemplate = createFilmsDetailAddComment();
 
@@ -143,10 +141,10 @@ const createFilmDetailsTemplate = (film) => {
   </section>`;
 };
 
-export default class FilmPopup extends AbstractView {
-  constructor(task) {
+export default class FilmPopup extends SmartView {
+  constructor(film) {
     super();
-    this._task = task;
+    this._data = this._parseFilmToData(film);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
@@ -154,7 +152,27 @@ export default class FilmPopup extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._task);
+    return createFilmDetailsTemplate(this._data);
+  }
+
+  restoreHandlers() {
+
+  }
+
+  _parseFilmToData(film) {
+    const data = Object.assign({}, film, {
+      showComments: film.comments.length > 0
+    });
+
+    return data;
+  }
+
+  _parseDataToFilm(data) {
+    const film = Object.assign({}, data);
+
+    delete film.showComments;
+
+    return film;
   }
 
   _closeClickHandler(evt) {
