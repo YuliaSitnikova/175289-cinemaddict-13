@@ -8,16 +8,32 @@ import ShowMoreButtonView from "../view/show-more-button";
 import FilmPresenter from "./film";
 import {update} from "../utils/common";
 import {render, RenderPlace} from "../utils/render";
+import {SortType} from "../constants";
+import dayjs from "dayjs";
 
 const FILMS_COUNT_PER_STEP = 5;
 const FILMS_EXTRA_COUNT = 2;
+
+const sortByDate = (filmA, filmB) => {
+  return dayjs(filmB.release).diff(dayjs(filmA.release));
+};
+
+const sortByRating = (filmA, filmB) => {
+  if (filmA.rating === filmB.rating) {
+    return 0;
+  }
+  return (filmA.rating < filmB.rating) ? 1 : -1;
+};
 
 export default class Films {
   constructor(filmsContainer) {
     this._filmsContainer = filmsContainer;
     this._filmPresenter = new Map();
     this._films = null;
+    this._sourcedFilms = null;
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
+    this._currentSortType = SortType.DEFAULT;
+
     this._sortComponent = new SortView();
     this._filmsComponent = new FilmsView();
     this._filmsListComponent = new FilmsListView();
@@ -25,6 +41,8 @@ export default class Films {
     this._filmsCommentedListComponent = new FilmsCommentedListView();
     this._noFilmsComponent = new NoFilmsView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
+
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
@@ -32,17 +50,53 @@ export default class Films {
 
   init(films) {
     this._films = films.slice();
+    this._sourcedFilms = films.slice();
 
     if (this._films.length === 0) {
       this._renderNoFilms();
     } else {
       this._renderSort();
       this._renderFilmsList();
+      render(this._filmsComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
       // this._renderPopularFilmsList();
       // this._renderCommentedFilmsList();
     }
 
     render(this._filmsContainer, this._filmsComponent, RenderPlace.BEFOREEND);
+  }
+
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._films.sort(sortByDate);
+        break;
+      case SortType.RATING:
+        this._films.sort(sortByRating);
+        break;
+      default:
+        this._films = this._sourcedFilms.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _clearFilmsList() {
+    this._filmPresenter.forEach((presenter) => presenter.destroy());
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (sortType === this._currentSortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearFilmsList();
+    this._renderFilmsList();
+  }
+
+  _renderSort() {
+    render(this._filmsContainer, this._sortComponent, RenderPlace.BEFOREEND);
+    this._sortComponent.setTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _handleFilmChange(film) {
@@ -52,17 +106,6 @@ export default class Films {
 
   _handleModeChange() {
     this._filmPresenter.forEach((presenter) => presenter.closePopup());
-  }
-
-  _handleShowMoreButtonClick() {
-    this._renderFilms(this._renderedFilmsCount, this._renderedFilmsCount + FILMS_COUNT_PER_STEP);
-
-    this._renderedFilmsCount += FILMS_COUNT_PER_STEP;
-
-    if (this._renderedFilmsCount > this._films.length) {
-      this._showMoreButtonComponent.getElement().remove();
-      this._showMoreButtonComponent.removeElement();
-    }
   }
 
   _renderFilm(filmsListComponent, film) {
@@ -83,8 +126,17 @@ export default class Films {
     if (this._films.length > FILMS_COUNT_PER_STEP) {
       this._renderShowMoreButton();
     }
+  }
 
-    render(this._filmsComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
+  _handleShowMoreButtonClick() {
+    this._renderFilms(this._renderedFilmsCount, this._renderedFilmsCount + FILMS_COUNT_PER_STEP);
+
+    this._renderedFilmsCount += FILMS_COUNT_PER_STEP;
+
+    if (this._renderedFilmsCount > this._films.length) {
+      this._showMoreButtonComponent.getElement().remove();
+      this._showMoreButtonComponent.removeElement();
+    }
   }
 
   _renderShowMoreButton() {
@@ -115,9 +167,5 @@ export default class Films {
 
   _renderNoFilms() {
     render(this._filmsComponent, this._noFilmsComponent, RenderPlace.BEFOREEND);
-  }
-
-  _renderSort() {
-    render(this._filmsContainer, this._sortComponent, RenderPlace.BEFOREEND);
   }
 }

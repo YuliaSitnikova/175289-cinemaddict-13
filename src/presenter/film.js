@@ -50,21 +50,15 @@ export default class Film {
     remove(prevFilmPopupComponent);
   }
 
+  destroy() {
+    remove(this._filmComponent);
+    remove(this._filmPopupComponent);
+  }
+
   closePopup() {
     if (this._isOpen) {
       this._closePopup();
     }
-  }
-
-  _setHandlers() {
-    this._filmComponent.setOpenClickHandler(this._handleOpenClick);
-    this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
-    this._filmComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._filmPopupComponent.setCloseClickHandler(this._handleCloseClick);
-    this._filmPopupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._filmPopupComponent.setWatchedClickHandler(this._handleWatchedClick);
-    this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
   }
 
   _onEscKeydown(evt) {
@@ -107,5 +101,16 @@ export default class Film {
 
   _handleCloseClick() {
     this._closePopup();
+  }
+
+  _setHandlers() {
+    this._filmComponent.setOpenClickHandler(this._handleOpenClick);
+    this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
+    this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._filmComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._filmPopupComponent.setCloseClickHandler(this._handleCloseClick);
+    this._filmPopupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
+    this._filmPopupComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
   }
 }
