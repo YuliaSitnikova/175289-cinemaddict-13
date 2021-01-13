@@ -10,11 +10,11 @@ export const formatFilmDuration = (durationInMinutes) => {
   }
 
   const millisecondsPerMinute = 60000;
-  const durationsInMilliseconds = durationInMinutes * millisecondsPerMinute;
-  const hours = dayjs.duration(durationsInMilliseconds).hours() > 0
-    ? `${dayjs.duration(durationsInMilliseconds).hours()}h `
+  const durationInMilliseconds = durationInMinutes * millisecondsPerMinute;
+  const hours = dayjs.duration(durationInMilliseconds).hours() > 0
+    ? `${dayjs.duration(durationInMilliseconds).hours()}h `
     : ``;
-  const minutes = `${dayjs.duration(durationsInMilliseconds).minutes()}m`;
+  const minutes = `${dayjs.duration(durationInMilliseconds).minutes()}m`;
 
   return hours + minutes;
 };
