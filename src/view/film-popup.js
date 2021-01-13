@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import SmartView from "./smart";
-import {formatFilmDuration} from "../utils/film";
+import {formatFilmDuration, formatFullFilmRelease} from "../utils/film";
 import {EMOJIES} from "../constants";
 
 const createFilmDetailsTable = (data) => {
@@ -21,7 +21,7 @@ const createFilmDetailsTable = (data) => {
     </tr>
     <tr class="film-details__row">
       <td class="film-details__term">Release Date</td>
-      <td class="film-details__cell">${dayjs(release).format(`D MMMM YYYY`)}</td>
+      <td class="film-details__cell">${formatFullFilmRelease(release)}</td>
     </tr>
     <tr class="film-details__row">
       <td class="film-details__term">Runtime</td>

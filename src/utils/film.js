@@ -16,3 +16,19 @@ export const formatFilmDuration = (durationInMinutes) => {
 
   return hours + minutes;
 };
+
+export const formatShortFilmRelease = (release) => {
+  if (!release) {
+    return ``;
+  }
+
+  return dayjs(release).format(`YYYY`);
+};
+
+export const formatFullFilmRelease = (release) => {
+  if (!release) {
+    return ``;
+  }
+
+  return dayjs(release).format(`D MMMM YYYY`);
+};
