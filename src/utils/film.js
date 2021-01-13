@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 export const formatFilmDuration = (durationInMinutes) => {
   if (!durationInMinutes) {
@@ -32,3 +34,12 @@ export const formatFullFilmRelease = (release) => {
 
   return dayjs(release).format(`D MMMM YYYY`);
 };
+
+export const formatCommentDate = (date) => {
+  if (!date) {
+    return ``;
+  }
+
+  return dayjs(date).fromNow();
+};
+

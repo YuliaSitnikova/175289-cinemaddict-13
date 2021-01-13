@@ -12,7 +12,7 @@ const generateName = () => {
 };
 
 const generateDate = () => {
-  const maxMinutesGap = 7 * 24 * 60;
+  const maxMinutesGap = (365 + 365 + 365 + 366) * 24 * 60; // Последние четыре года
   const daysGap = getRandomInteger(0, maxMinutesGap);
   return dayjs().subtract(daysGap, `minute`).toDate();
 };

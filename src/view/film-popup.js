@@ -1,6 +1,5 @@
-import dayjs from "dayjs";
 import SmartView from "./smart";
-import {formatFilmDuration, formatFullFilmRelease} from "../utils/film";
+import {formatFilmDuration, formatFullFilmRelease, formatCommentDate} from "../utils/film";
 import {EMOJIES} from "../constants";
 
 const createFilmDetailsTable = (data) => {
@@ -49,7 +48,7 @@ const createFilmsDetailComments = (comments) => {
       <p class="film-details__comment-text">${message}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${name}</span>
-        <span class="film-details__comment-day">${dayjs(date).format(`YYYY/MM/D HH:MM`)}</span>
+        <span class="film-details__comment-day">${formatCommentDate(date)}</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>
