@@ -1,8 +1,6 @@
-import {getRandomElement, getRandomInteger, getRandomElements} from "../utils/common";
-import {generateComment} from "../mock/comment";
 import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
-dayjs.extend(duration);
+import {generateComment} from "../mock/comment";
+import {getRandomElement, getRandomInteger, getRandomElements} from "../utils/common";
 
 const generateId = () => {
   return Date.now() + parseInt(Math.random() * 10000, 10);
@@ -88,14 +86,7 @@ const generateRelease = () => {
 };
 
 const generateDuration = () => {
-  const millisecondsPerMinute = 60000;
-  const durationsInMilliseconds = Math.floor(getRandomInteger(millisecondsPerMinute, millisecondsPerMinute * 180));
-  const hours = dayjs.duration(durationsInMilliseconds).hours() > 0
-    ? `${dayjs.duration(durationsInMilliseconds).hours()}h `
-    : ``;
-  const minutes = `${dayjs.duration(durationsInMilliseconds).minutes()}m`;
-
-  return hours + minutes;
+  return getRandomInteger(1, 180);
 };
 
 const generateCountry = () => {

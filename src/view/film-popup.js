@@ -1,6 +1,6 @@
 import SmartView from "./smart";
+import {formatFilmDuration, formatFullFilmRelease, formatCommentDate} from "../utils/film";
 import {EMOJIES} from "../constants";
-import dayjs from "dayjs";
 
 const createFilmDetailsTable = (data) => {
   const {director, writers, actors, release, duration, country, genres} = data;
@@ -20,11 +20,11 @@ const createFilmDetailsTable = (data) => {
     </tr>
     <tr class="film-details__row">
       <td class="film-details__term">Release Date</td>
-      <td class="film-details__cell">${dayjs(release).format(`D MMMM YYYY`)}</td>
+      <td class="film-details__cell">${formatFullFilmRelease(release)}</td>
     </tr>
     <tr class="film-details__row">
       <td class="film-details__term">Runtime</td>
-      <td class="film-details__cell">${duration}</td>
+      <td class="film-details__cell">${formatFilmDuration(duration)}</td>
     </tr>
     <tr class="film-details__row">
       <td class="film-details__term">Country</td>
@@ -48,7 +48,7 @@ const createFilmsDetailComments = (comments) => {
       <p class="film-details__comment-text">${message}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${name}</span>
-        <span class="film-details__comment-day">${dayjs(date).format(`YYYY/MM/D HH:MM`)}</span>
+        <span class="film-details__comment-day">${formatCommentDate(date)}</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>
