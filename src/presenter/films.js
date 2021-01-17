@@ -26,10 +26,10 @@ const sortByRating = (filmA, filmB) => {
 };
 
 export default class Films {
-  constructor(filmsContainer) {
+  constructor(filmsContainer, filmsModel) {
+    this._filmsModel = filmsModel;
     this._filmsContainer = filmsContainer;
     this._filmPresenter = new Map();
-    this._films = null;
     this._sourcedFilms = null;
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
@@ -48,9 +48,9 @@ export default class Films {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
-  init(films) {
-    this._films = films.slice();
-    this._sourcedFilms = films.slice();
+  init() {
+    this._films = this._getFilms();
+    this._sourcedFilms = this._getFilms();
 
     if (this._films.length === 0) {
       this._renderNoFilms();
@@ -63,6 +63,10 @@ export default class Films {
     }
 
     render(this._filmsContainer, this._filmsComponent, RenderPlace.BEFOREEND);
+  }
+
+  _getFilms() {
+    return this._filmsModel.getFilms().slice();
   }
 
   _sortFilms(sortType) {
