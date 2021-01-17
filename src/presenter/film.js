@@ -1,5 +1,6 @@
 import FilmCardView from "../view/film-card";
 import FilmPopupView from "../view/film-popup";
+import {UserAction, UpdateType} from "../constants";
 import {RenderPlace, render, remove, replace} from "../utils/render";
 
 export default class Film {
@@ -88,15 +89,24 @@ export default class Film {
   }
 
   _handleWatchlistClick() {
-    this._changeData(Object.assign({}, this._film, {isWatch: !this._film.isWatch}));
+    const update = Object.assign({}, this._film, {
+      isWatch: !this._film.isWatch
+    });
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.PATCH, update);
   }
 
   _handleWatchedClick() {
-    this._changeData(Object.assign({}, this._film, {isWatched: !this._film.isWatched}));
+    const update = Object.assign({}, this._film, {
+      isWatched: !this._film.isWatched
+    });
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.PATCH, update);
   }
 
   _handleFavoriteClick() {
-    this._changeData(Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
+    const update = Object.assign({}, this._film, {
+      isFavorite: !this._film.isFavorite
+    });
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.PATCH, update);
   }
 
   _handleCloseClick() {
