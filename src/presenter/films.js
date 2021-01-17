@@ -29,16 +29,16 @@ export default class Films {
     this._filmsModel = filmsModel;
     this._filmsContainer = filmsContainer;
     this._filmPresenter = {};
-    this._renderedFilmCount = FILMS_COUNT_PER_STEP;
+    this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
 
-    this._sortComponent = new SortView();
+    this._sortComponent = null;
+    this._showMoreButtonComponent = null;
     this._filmsComponent = new FilmsView();
     this._filmsListComponent = new FilmsListView();
     this._filmsPopularListComponent = new FilmsPopularListView();
     this._filmsCommentedListComponent = new FilmsCommentedListView();
     this._noFilmsComponent = new NoFilmsView();
-    this._showMoreButtonComponent = new ShowMoreButtonView();
 
     this._handleViewChange = this._handleViewChange.bind(this);
     this._handleModelChange = this._handleModelChange.bind(this);
@@ -65,34 +65,6 @@ export default class Films {
     return this._filmsModel.getFilms().slice();
   }
 
-  _handleSortTypeChange(sortType) {
-    if (sortType === this._currentSortType) {
-      return;
-    }
-
-    this._currentSortType = sortType;
-    this._clearFilmsList();
-    this._renderFilmsList();
-  }
-
-  _renderSort() {
-    this._filmsContainer.insertBefore(this._sortComponent.getElement(), this._filmsComponent.getElement());
-    this._sortComponent.setTypeChangeHandler(this._handleSortTypeChange);
-  }
-
-  _renderNoFilms() {
-    render(this._filmsComponent, this._noFilmsComponent, RenderPlace.BEFOREEND);
-  }
-
-  _clearFilmsList() {
-    Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._filmPresenter = {};
-    this._renderedFilmCount = FILMS_COUNT_PER_STEP;
-    remove(this._showMoreButtonComponent);
-  }
-
   _handleViewChange(changeType, updateType, update) {
     switch (changeType) {
       case UserAction.UPDATE_FILM:
@@ -107,12 +79,39 @@ export default class Films {
         this._filmPresenter[data.id].update(data);
         break;
       case UpdateType.MINOR:
-
+        this._clearFilms();
+        this._renderFilms();
         break;
       case UpdateType.MAJOR:
-
+        this._clearFilms({resetSortType: true});
+        this._renderFilms();
         break;
     }
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (sortType === this._currentSortType) {
+      return;
+    }
+
+    this._currentSortType = sortType;
+    this._clearFilms();
+    this._renderFilms();
+  }
+
+  _renderSort() {
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
+    this._sortComponent.setTypeChangeHandler(this._handleSortTypeChange);
+
+    this._filmsContainer.insertBefore(this._sortComponent.getElement(), this._filmsComponent.getElement());
+  }
+
+  _renderNoFilms() {
+    render(this._filmsComponent, this._noFilmsComponent, RenderPlace.BEFOREEND);
   }
 
   _handleFilmModeChange() {
@@ -132,35 +131,27 @@ export default class Films {
   }
 
   _handleShowMoreButtonClick() {
-    const filmCount = this._getFilms().length;
-    const newRenderedFilmCount = Math.min(filmCount, this._renderedFilmCount + FILMS_COUNT_PER_STEP);
-    const films = this._getFilms().slice(this._renderedFilmCount, newRenderedFilmCount);
+    const filmsCount = this._getFilms().length;
+    const newRenderedFilmsCount = Math.min(filmsCount, this._renderedFilmsCount + FILMS_COUNT_PER_STEP);
+    const films = this._getFilms().slice(this._renderedFilmsCount, newRenderedFilmsCount);
 
     this._renderFilmsElements(films);
-    this._renderedFilmCount = newRenderedFilmCount;
+    this._renderedFilmsCount = newRenderedFilmsCount;
 
-    if (this._renderedFilmCount >= filmCount) {
+    if (this._renderedFilmsCount >= filmsCount) {
       remove(this._showMoreButtonComponent);
     }
   }
 
   _renderShowMoreButton() {
-    render(this._filmsListComponent, this._showMoreButtonComponent, RenderPlace.BEFOREEND);
-
-    this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
-  }
-
-  _renderFilmsList() {
-    const filmCount = this._getFilms().length;
-    const films = this._getFilms().slice(0, Math.min(filmCount, FILMS_COUNT_PER_STEP));
-
-    this._renderFilmsElements(films);
-
-    if (this._getFilms().length > FILMS_COUNT_PER_STEP) {
-      this._renderShowMoreButton();
+    if (this._showMoreButtonComponent !== null) {
+      this._showMoreButtonComponent = null;
     }
 
-    render(this._filmsComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
+    this._showMoreButtonComponent = new ShowMoreButtonView();
+    this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
+
+    render(this._filmsListComponent, this._showMoreButtonComponent, RenderPlace.BEFOREEND);
   }
 
   _renderPopularFilmsList() {
@@ -183,14 +174,40 @@ export default class Films {
     render(this._filmsComponent, this._filmsCommentedListComponent, RenderPlace.BEFOREEND);
   }
 
+  _clearFilms({resetSortType = false} = {}) {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
+    this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
+
+    remove(this._noFilmsComponent);
+    remove(this._sortComponent);
+    remove(this._filmsListComponent);
+    remove(this._showMoreButtonComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
+  }
+
   _renderFilms() {
-    if (this._getFilms().length === 0) {
+    const films = this._getFilms();
+    const filmsCount = films.length;
+
+    if (filmsCount === 0) {
       this._renderNoFilms();
       return;
     }
 
     this._renderSort();
-    this._renderFilmsList();
+
+    render(this._filmsComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
+    this._renderFilmsElements(films.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
+    if (filmsCount > FILMS_COUNT_PER_STEP) {
+      this._renderShowMoreButton();
+    }
+
     // this._renderPopularFilmsList();
     // this._renderCommentedFilmsList();
   }
