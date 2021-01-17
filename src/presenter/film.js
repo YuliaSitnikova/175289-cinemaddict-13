@@ -3,8 +3,8 @@ import FilmPopupView from "../view/film-popup";
 import {RenderPlace, render, remove, replace} from "../utils/render";
 
 export default class Film {
-  constructor(filmsListComponent, changeData, changeMode) {
-    this._filmsListComponent = filmsListComponent;
+  constructor(filmContainer, changeData, changeMode) {
+    this._filmsListComponent = filmContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._filmsListContainer = this._filmsListComponent.getElement().querySelector(`.films-list__container`);
