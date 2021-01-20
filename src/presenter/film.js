@@ -62,6 +62,11 @@ export default class Film {
     }
   }
 
+  getId() {
+    const id = this._film.id;
+    return id;
+  }
+
   _onEscKeydown(evt) {
     if (evt.key === `Esc` || evt.key === `Escape`) {
       evt.preventDefault();
@@ -99,14 +104,14 @@ export default class Film {
     const update = Object.assign({}, this._film, {
       isWatched: !this._film.isWatched
     });
-    this._changeData(UserAction.UPDATE_FILM, UpdateType.PATCH, update);
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, update);
   }
 
   _handleFavoriteClick() {
     const update = Object.assign({}, this._film, {
       isFavorite: !this._film.isFavorite
     });
-    this._changeData(UserAction.UPDATE_FILM, UpdateType.PATCH, update);
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, update);
   }
 
   _handleCloseClick() {
