@@ -18,3 +18,16 @@ export const getRandomElements = (elements, count) => {
   }
   return randomElements.slice(0, count);
 };
+
+export const generateId = () => {
+  return Date.now() + parseInt(Math.random() * 10000, 10);
+};
+
+export const generateUserName = () => {
+  const names = [
+    `Tim Macoveev`,
+    `John Doe`
+  ];
+
+  return getRandomElement(names);
+};

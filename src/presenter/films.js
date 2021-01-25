@@ -65,7 +65,6 @@ export default class Films {
   }
 
   _getFilms() {
-    // debugger;
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
     const filteredFilms = filter[filterType](films);
@@ -92,6 +91,12 @@ export default class Films {
     switch (changeType) {
       case UserAction.UPDATE_FILM:
         this._filmsModel.updateFilm(updateType, update);
+        break;
+      case UserAction.ADD_COMMENT:
+        this._filmsModel.addComment(updateType, update);
+        break;
+      case UserAction.DELETE_COMMENT:
+        this._filmsModel.deleteComment(updateType, update);
         break;
     }
   }
