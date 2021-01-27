@@ -1,3 +1,4 @@
+import he from "he";
 import SmartView from "./smart";
 import {formatFilmDuration, formatFullFilmRelease, formatCommentDate} from "../utils/film";
 import {EMOJIES} from "../constants";
@@ -40,12 +41,12 @@ const createFilmDetailsTable = (data) => {
 };
 
 const createFilmsDetailComments = (comments) => {
-  return comments.map(({emoji, message, name, date}) => `<li class="film-details__comment">
+  return comments.map(({id, name, date, emoji, message}) => `<li class="film-details__comment" data-id="${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
     </span>
     <div>
-      <p class="film-details__comment-text">${message}</p>
+      <p class="film-details__comment-text">${he.encode(message)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${name}</span>
         <span class="film-details__comment-day">${formatCommentDate(date)}</span>
@@ -55,12 +56,12 @@ const createFilmsDetailComments = (comments) => {
   </li>`).join(``);
 };
 
-const createFilmsDetailAddComment = (selectedEmoji) => {
+const createFilmsDetailAddComment = (selectedEmoji, message) => {
   return `<div class="film-details__new-comment">
     <div class="film-details__add-emoji-label">${selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}">` : ``}</div>
 
     <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${message}</textarea>
     </label>
 
     <div class="film-details__emoji-list">
@@ -92,14 +93,15 @@ const createFilmDetailsTemplate = (data) => {
     isWatched,
     isFavorite,
     showComments,
-    selectedEmoji
+    selectedEmoji,
+    message
   } = data;
 
   const tableTemplate = createFilmDetailsTable(data);
 
   const commentsTemplate = showComments ? createFilmsDetailComments(comments) : ``;
 
-  const addCommentTemplate = createFilmsDetailAddComment(selectedEmoji);
+  const addCommentTemplate = createFilmsDetailAddComment(selectedEmoji, message);
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -166,11 +168,14 @@ export default class FilmPopup extends SmartView {
     super();
     this._data = this._parseFilmToData(film);
     this._popupScrollHandler = this._popupScrollHandler.bind(this);
+    this._closeClickHandler = this._closeClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._formKeypressHandler = this._formKeypressHandler.bind(this);
+    this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
     this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
-    this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._commentInputHandler = this._commentInputHandler.bind(this);
 
     this._setHandlers();
   }
@@ -191,13 +196,22 @@ export default class FilmPopup extends SmartView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setFormKeypressHandler(this._callback.formKeypress);
+    this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
+  }
+
+  _setHandlers() {
+    this.getElement().addEventListener(`scroll`, this._popupScrollHandler);
+    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`change`, this._emojiChangeHandler);
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`input`, this._commentInputHandler);
   }
 
   _parseFilmToData(film) {
     const data = Object.assign({}, film, {
       showComments: film.comments.length > 0,
       scrollTop: 0,
-      selectedEmoji: null
+      selectedEmoji: null,
+      message: ``
     });
 
     return data;
@@ -209,19 +223,20 @@ export default class FilmPopup extends SmartView {
     delete film.showComments;
     delete film.scrollTop;
     delete film.selectedEmoji;
+    delete film.message;
 
     return film;
-  }
-
-  _setHandlers() {
-    this.getElement().addEventListener(`scroll`, this._popupScrollHandler);
-    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`change`, this._emojiChangeHandler);
   }
 
   _popupScrollHandler() {
     this.updateData({
       scrollTop: this.getElement().scrollTop
     });
+  }
+
+  _closeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeClick();
   }
 
   _watchlistClickHandler(evt) {
@@ -239,15 +254,34 @@ export default class FilmPopup extends SmartView {
     this._callback.favoriteClick();
   }
 
+  _formKeypressHandler(evt) {
+    if (evt.ctrlKey && evt.keyCode === 10) {
+      const emoji = this._data.selectedEmoji;
+      const message = this._data.message;
+      this._callback.formKeypress(emoji, message);
+    }
+  }
+
+  _deleteCommentClickHandler(evt) {
+    if (!evt.target.classList.contains(`film-details__comment-delete`)) {
+      return;
+    }
+
+    evt.preventDefault();
+    const id = evt.target.closest(`.film-details__comment`).dataset.id;
+    this._callback.deleteCommentClick(id);
+  }
+
   _emojiChangeHandler(evt) {
     this.updateData({
       selectedEmoji: evt.target.value
     }, true);
   }
 
-  _closeClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.closeClick();
+  _commentInputHandler(evt) {
+    this.updateData({
+      message: evt.target.value
+    });
   }
 
   setCloseClickHandler(callback) {
@@ -268,5 +302,15 @@ export default class FilmPopup extends SmartView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  setFormKeypressHandler(callback) {
+    this._callback.formKeypress = callback;
+    this.getElement(`film-details__new-comment`).addEventListener(`keypress`, this._formKeypressHandler);
+  }
+
+  setDeleteCommentClickHandler(callback) {
+    this._callback.deleteCommentClick = callback;
+    this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, this._deleteCommentClickHandler);
   }
 }

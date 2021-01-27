@@ -1,10 +1,6 @@
 import dayjs from "dayjs";
 import {generateComment} from "../mock/comment";
-import {getRandomElement, getRandomInteger, getRandomElements} from "../utils/common";
-
-const generateId = () => {
-  return Date.now() + parseInt(Math.random() * 10000, 10);
-};
+import {getRandomElement, getRandomInteger, getRandomElements, generateId} from "../utils/common";
 
 const generatePoster = () => {
   const posters = [

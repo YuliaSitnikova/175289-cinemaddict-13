@@ -19,12 +19,15 @@ export const getRandomElements = (elements, count) => {
   return randomElements.slice(0, count);
 };
 
-export const update = (items, updateItem) => {
-  const index = items.findIndex((item) => item.id === updateItem.id);
+export const generateId = () => {
+  return Date.now() + parseInt(Math.random() * 10000, 10);
+};
 
-  if (index === -1) {
-    return items;
-  }
+export const generateUserName = () => {
+  const names = [
+    `Tim Macoveev`,
+    `John Doe`
+  ];
 
-  return [...items.slice(0, index), updateItem, ...items.slice(index + 1)];
+  return getRandomElement(names);
 };

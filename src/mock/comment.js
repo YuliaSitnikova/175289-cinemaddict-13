@@ -1,15 +1,6 @@
 import dayjs from "dayjs";
 import {EMOJIES} from "../constants";
-import {getRandomElement, getRandomInteger} from "../utils/common";
-
-const generateName = () => {
-  const names = [
-    `Tim Macoveev`,
-    `John Doe`
-  ];
-
-  return getRandomElement(names);
-};
+import {getRandomElement, getRandomInteger, generateUserName, generateId} from "../utils/common";
 
 const generateDate = () => {
   const maxMinutesGap = (365 + 365 + 365 + 366) * 24 * 60; // Последние четыре года
@@ -34,7 +25,8 @@ const generateMessage = () => {
 
 export const generateComment = () => {
   return {
-    name: generateName(),
+    id: generateId(),
+    name: generateUserName(),
     date: generateDate(),
     emoji: generateEmoji(),
     message: generateMessage()
