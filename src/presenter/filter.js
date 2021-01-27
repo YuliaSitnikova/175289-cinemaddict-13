@@ -3,8 +3,8 @@ import {RenderPlace, render, remove} from "../utils/render";
 import {UpdateType} from "../constants";
 
 export default class Filter {
-  constructor(navigationContainer, filterModel, filmsModel) {
-    this._filterContainer = navigationContainer;
+  constructor(filterContainer, filterModel, filmsModel) {
+    this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
     this._items = null;
@@ -28,7 +28,7 @@ export default class Filter {
   }
 
   _update() {
-    if (this._filterContainer.contains(this._filterComponent.getElement())) {
+    if (this._filterContainer.getElement().contains(this._filterComponent.getElement())) {
       remove(this._filterComponent);
     }
 
