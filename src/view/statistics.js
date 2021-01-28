@@ -171,7 +171,7 @@ export default class Statistics extends Smart {
   }
 
   _setHandlers() {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._filterTypeChangeHandler)
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._filterTypeChangeHandler);
   }
 
   _filterTypeChangeHandler(evt) {
