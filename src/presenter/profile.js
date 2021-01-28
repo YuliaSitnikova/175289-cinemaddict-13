@@ -1,5 +1,6 @@
 import ProfileView from "../view/profile";
 import {RenderPlace, render, remove} from "../utils/render";
+import {getRank} from "../utils/statistics";
 
 export default class Profile {
   constructor(profileContainer, filmsModel) {
@@ -16,7 +17,7 @@ export default class Profile {
     const watchedFilmsCount = this._getWatchedFilmCount();
 
     if (watchedFilmsCount !== 0) {
-      this._profileComponent = new ProfileView();
+      this._profileComponent = new ProfileView(getRank(watchedFilmsCount));
       render(this._profileContainer, this._profileComponent, RenderPlace.BEFOREEND);
     }
   }

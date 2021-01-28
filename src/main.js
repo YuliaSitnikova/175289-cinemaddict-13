@@ -10,7 +10,7 @@ import FilmsPresenter from "./presenter/films";
 import {RenderPlace, render, remove} from "./utils/render";
 import {UpdateType} from "./constants";
 
-const FILMS_COUNT = 18;
+const FILMS_COUNT = 52;
 
 const siteHeader = document.querySelector(`.header`);
 const siteMain = document.querySelector(`.main`);
@@ -49,8 +49,7 @@ const handleFilterTypeChange = () => {
 const handleStatisticsMenuClick = () => {
   filmsPresenter.destroy();
   filterModel.setFilter(UpdateType.MAJOR, null);
-
-  statisticsComponent = new StatisticsView();
+  statisticsComponent = new StatisticsView(filmsModel.getFilms().filter((film) => film.isWatched));
   render(siteMain, statisticsComponent, RenderPlace.BEFOREEND);
 };
 

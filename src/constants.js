@@ -29,3 +29,11 @@ export const UpdateType = {
   MINOR: `MINOR`,
   MAJOR: `MAJOR`
 };
+
+export const StatisticsFilterType = {
+  ALL: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
+};
