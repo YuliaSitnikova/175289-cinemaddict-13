@@ -1,4 +1,6 @@
-import AbstractView from "./abstract";
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import Smart from "./smart";
 
 const createStatisticTemplate = () => {
   return `<section class="statistic">
@@ -49,7 +51,7 @@ const createStatisticTemplate = () => {
   </section>`;
 };
 
-export default class Statistics extends AbstractView {
+export default class Statistics extends Smart {
   getTemplate() {
     return createStatisticTemplate();
   }
