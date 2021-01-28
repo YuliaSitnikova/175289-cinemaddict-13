@@ -19,11 +19,20 @@ export default class Menu extends AbstractView {
 
   _statisticsClickHandler(evt) {
     evt.preventDefault();
+    evt.target.classList.add(`main-navigation__additional--active`);
     this._callback.statisticksClick();
   }
 
   setStatisticsClickHandler(callback) {
     this._callback.statisticksClick = callback;
     this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._statisticsClickHandler);
+  }
+
+  resetActiveItem() {
+    const item = this.getElement().querySelector(`.main-navigation__additional--active`);
+
+    if (item) {
+      item.classList.remove(`main-navigation__additional--active`);
+    }
   }
 }

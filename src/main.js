@@ -7,7 +7,8 @@ import FilmsModel from "./model/films";
 import ProfilePresenter from "./presenter/profile";
 import FilterPresenter from "./presenter/filter";
 import FilmsPresenter from "./presenter/films";
-import {render, RenderPlace} from "./utils/render";
+import {RenderPlace, render, remove} from "./utils/render";
+import {UpdateType} from "./constants";
 
 const FILMS_COUNT = 18;
 
@@ -32,16 +33,27 @@ filterPresenter.init();
 const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel);
 filmsPresenter.init();
 
-
 render(siteFooter, new FooterStatisticsView(films.length), RenderPlace.BEFOREEND);
 
-const handleStatisticsClick = () => {
+let statisticsComponent = null;
+
+const handleFilterTypeChange = () => {
+  if (statisticsComponent !== null) {
+    remove(statisticsComponent);
+    statisticsComponent = null;
+    menuComponent.resetActiveItem();
+    filmsPresenter.init();
+  }
+};
+
+const handleStatisticsMenuClick = () => {
   filmsPresenter.destroy();
+  filterModel.setFilter(UpdateType.MAJOR, null);
 
-
-  const statisticsComponent = new StatisticsView();
+  statisticsComponent = new StatisticsView();
   render(siteMain, statisticsComponent, RenderPlace.BEFOREEND);
 };
 
-menuComponent.setStatisticsClickHandler(handleStatisticsClick);
 
+filterModel.addObserver(handleFilterTypeChange);
+menuComponent.setStatisticsClickHandler(handleStatisticsMenuClick);

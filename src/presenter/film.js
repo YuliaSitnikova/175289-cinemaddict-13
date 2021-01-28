@@ -6,11 +6,12 @@ import {generateId, generateUserName} from "../utils/common";
 import dayjs from "dayjs";
 
 export default class Film {
-  constructor(filmContainer, changeData, beforeModeChangeHandler, afterModeChangeHandler) {
+  constructor(filmContainer, changeData, changeModeHandler, showPopupHandler, closePopupHandler) {
     this._filmsListComponent = filmContainer;
     this._changeData = changeData;
-    this._beforeModeChangeHandler = beforeModeChangeHandler;
-    this._afterModeChangeHandler = afterModeChangeHandler;
+    this._changeModeHandler = changeModeHandler;
+    this._showPopupHandler = showPopupHandler;
+    this._closePopupHandler = closePopupHandler;
     this._filmContainer = this._filmsListComponent.getElement().querySelector(`.films-list__container`);
     this._filmPopupContainer = document.body;
     this._film = null;
@@ -77,6 +78,10 @@ export default class Film {
     return this._mode;
   }
 
+  // updatePopup(update) {
+  //   this._filmPopupComponent.updateData(update, true);
+  // }
+
   hidePopup() {
     if (this._mode === FilmMode.POPUP) {
       this._hidePopup();
@@ -87,22 +92,17 @@ export default class Film {
     this._filmPopupContainer.removeChild(this._filmPopupComponent.getElement());
     this._filmPopupContainer.classList.remove(`hide-overflow`);
     this._mode = FilmMode.DEFAULT;
-
     document.removeEventListener(`keydown`, this._documentKeydownHandler);
-
-    this._afterModeChangeHandler();
+    this._closePopupHandler();
   }
 
   _showPopup() {
-    this._beforeModeChangeHandler();
-
+    this._changeModeHandler();
     this._filmPopupContainer.appendChild(this._filmPopupComponent.getElement());
     this._filmPopupContainer.classList.add(`hide-overflow`);
     this._mode = FilmMode.POPUP;
-
     document.addEventListener(`keydown`, this._documentKeydownHandler);
-
-    this._afterModeChangeHandler();
+    this._showPopupHandler(this._film.id);
   }
 
   _documentKeydownHandler(evt) {
@@ -154,13 +154,13 @@ export default class Film {
       comments: [...this._film.comments, newComment]
     });
 
-    this._changeData(UserAction.ADD_COMMENT, UpdateType.PATCH, update);
+    this._changeData(UserAction.ADD_COMMENT, UpdateType.MINOR, update);
   }
 
   _handleDeleteCommentClick(id) {
     const update = Object.assign({}, this._film, {
       comments: this._film.comments.filter((comment) => comment.id !== Number(id))
     });
-    this._changeData(UserAction.DELETE_COMMENT, UpdateType.PATCH, update);
+    this._changeData(UserAction.DELETE_COMMENT, UpdateType.MINOR, update);
   }
 }

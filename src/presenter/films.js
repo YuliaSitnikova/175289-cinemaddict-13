@@ -6,7 +6,7 @@ import FilmsCommentedListView from "../view/films-commented-list";
 import NoFilmsView from "../view/no-films";
 import ShowMoreButtonView from "../view/show-more-button";
 import FilmPresenter from "./film";
-import {SortType, FilmMode, UserAction, UpdateType} from "../constants";
+import {FilterType, SortType, FilmMode, UserAction, UpdateType} from "../constants";
 import {RenderPlace, render, remove} from "../utils/render";
 import {filter} from "../utils/filter";
 import dayjs from "dayjs";
@@ -41,7 +41,10 @@ export default class Films {
       'main': {},
       'popular': {},
       'commented': {},
-      'popup': null
+      'popup': {
+        id: null,
+        presenter: null
+      }
     };
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
@@ -57,8 +60,9 @@ export default class Films {
     this._handleViewChange = this._handleViewChange.bind(this);
     this._handleModelChange = this._handleModelChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._handleBeforeModeChange = this._handleBeforeModeChange.bind(this);
-    this._handleAfterModeChange = this._handleAfterModeChange.bind(this);
+    this._handleChangeMode = this._handleChangeMode.bind(this);
+    this._handlePopupShow = this._handlePopupShow.bind(this);
+    this._handlePopupClose = this._handlePopupClose.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
@@ -81,8 +85,8 @@ export default class Films {
   }
 
   _getFilms() {
-    const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
+    const filterType = this._filterModel.getFilter() || FilterType.ALL;
     const filteredFilms = filter[filterType](films);
 
     switch (this._currentSortType) {
@@ -140,8 +144,8 @@ export default class Films {
         break;
     }
 
-    if (this._filmPresenters.popup) {
-      this._filmPresenters.popup.init(update);
+    if (this._filmPresenters.popup && this._filmPresenters.popup.id === update.id) {
+      this._filmPresenters.popup.presenter.init(update);
     }
   }
 
@@ -170,7 +174,7 @@ export default class Films {
     render(this._filmsComponent, this._noFilmsComponent, RenderPlace.BEFOREEND);
   }
 
-  _handleBeforeModeChange() {
+  _handleChangeMode() {
     Object
       .values(this._filmPresenters.main)
       .forEach((presenter) => presenter.hidePopup());
@@ -184,33 +188,32 @@ export default class Films {
       .forEach((presenter) => presenter.hidePopup());
   }
 
-  _handleAfterModeChange() {
-    for (const id of Object.keys(this._filmPresenters.main)) {
-      if (this._filmPresenters.main[id].getMode() === FilmMode.POPUP) {
-        this._filmPresenters.popup = this._filmPresenters.main[id];
-        return;
-      }
+  _handlePopupShow(id) {
+    this._filmPresenters.popup.id = id;
+
+    if (this._filmPresenters.main[id] && this._filmPresenters.main[id].getMode() === FilmMode.POPUP) {
+      this._filmPresenters.popup.presenter = this._filmPresenters.main[id];
+      return;
     }
 
-    for (const id of Object.keys(this._filmPresenters.popular)) {
-      if (this._filmPresenters.popular[id].getMode() === FilmMode.POPUP) {
-        this._filmPresenters.popup = this._filmPresenters.popular[id];
-        return;
-      }
+    if (this._filmPresenters.popular[id] && this._filmPresenters.popular[id].getMode() === FilmMode.POPUP) {
+      this._filmPresenters.popup.presenter = this._filmPresenters.popular[id];
+      return;
     }
 
-    for (const id of Object.keys(this._filmPresenters.commented)) {
-      if (this._filmPresenters.commented[id].getMode() === FilmMode.POPUP) {
-        this._filmPresenters.popup = this._filmPresenters.commented[id];
-        return;
-      }
+    if (this._filmPresenters.commented[id] && this._filmPresenters.commented[id].getMode() === FilmMode.POPUP) {
+      this._filmPresenters.popup.presenter = this._filmPresenters.commented[id];
+      return;
     }
+  }
 
-    this._filmPresenters.popup = null;
+  _handlePopupClose() {
+    this._filmPresenters.popup.id = null;
+    this._filmPresenters.popup.presenter = null;
   }
 
   _renderFilm(filmContainer, filmPresenters, film) {
-    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewChange, this._handleBeforeModeChange, this._handleAfterModeChange);
+    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewChange, this._handleChangeMode, this._handlePopupShow, this._handlePopupClose);
     filmPresenter.init(film);
     filmPresenters[film.id] = filmPresenter;
   }
