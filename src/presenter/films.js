@@ -34,15 +34,16 @@ const sortByCommentCount = (filmA, filmB) => {
 };
 
 export default class Films {
-  constructor(filmsContainer, filmsModel, filterModel) {
+  constructor(filmsContainer, filmsModel, filterModel, api) {
     this._filmsContainer = filmsContainer;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._api = api;
     this._filmPresenters = {
-      'main': {},
-      'popular': {},
-      'commented': {},
-      'popup': {
+      main: {},
+      popular: {},
+      commented: {},
+      popup: {
         id: null,
         presenter: null
       }
@@ -119,7 +120,9 @@ export default class Films {
   _handleViewChange(changeType, updateType, update) {
     switch (changeType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.update(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.update(updateType, response);
+        });
         break;
       case UserAction.ADD_COMMENT:
         this._filmsModel.update(updateType, update);

@@ -25,7 +25,7 @@ const filmsModel = new FilmsModel();
 const profilePresenter = new ProfilePresenter(siteHeader, filmsModel);
 const menuComponent = new MenuView();
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
-const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel);
+const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel, api);
 const footerStatisticsComponent = new FooterStatisticsView();
 
 profilePresenter.init();

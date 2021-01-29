@@ -42,7 +42,6 @@ export default class Film {
     const prevFilmComponent = this._filmComponent;
 
     this._film = film;
-    console.log(this._film)
     this._filmComponent = new FilmCardView(film);
     this._setHandlers();
 
@@ -126,7 +125,8 @@ export default class Film {
 
   _handleWatchedClick() {
     const update = Object.assign({}, this._film, {
-      isWatched: !this._film.isWatched
+      isWatched: !this._film.isWatched,
+      watchingDate: !this._film.isWatched ? dayjs() : null
     });
     this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, update);
   }
