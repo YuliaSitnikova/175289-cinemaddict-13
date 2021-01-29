@@ -9,14 +9,21 @@ import FilterPresenter from "./presenter/filter";
 import FilmsPresenter from "./presenter/films";
 import {RenderPlace, render, remove} from "./utils/render";
 import {UpdateType} from "./constants";
+import Api from "./api";
 
 const FILMS_COUNT = 52;
+const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
+const AUTHORIZATION = `Basic 1lgrFiAqmJHH`;
 
 const siteHeader = document.querySelector(`.header`);
 const siteMain = document.querySelector(`.main`);
 const siteFooter = document.querySelector(`.footer`);
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getFilms().then((films) => {console.log(films)});
+
 const filterModel = new FilterModel();
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
