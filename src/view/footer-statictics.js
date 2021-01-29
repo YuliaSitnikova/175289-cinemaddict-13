@@ -7,12 +7,16 @@ const createFooterStatisticTemplate = (count) => {
 };
 
 export default class FooterStatistics extends AbstractView {
-  constructor(count) {
+  constructor() {
     super();
-    this._count = count;
+    this._count = 0;
   }
 
   getTemplate() {
     return createFooterStatisticTemplate(this._count);
+  }
+
+  setCount(count) {
+    this._count = count;
   }
 }
