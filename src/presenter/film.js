@@ -173,9 +173,12 @@ export default class Film {
   }
 
   _handleDeleteCommentClick(id) {
-    const update = Object.assign({}, this._film, {
-      comments: this._film.comments.filter((comment) => comment.id !== Number(id))
-    });
+    const update = {
+      film: Object.assign({}, this._film, {
+        comments: this._film.comments.filter((comment) => comment !== id)
+      }),
+      id
+    };
     this._changeData(UserAction.DELETE_COMMENT, UpdateType.MINOR, update);
   }
 

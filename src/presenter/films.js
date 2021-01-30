@@ -103,7 +103,10 @@ export default class Films {
         });
         break;
       case UserAction.DELETE_COMMENT:
-        this._filmsModel.update(updateType, update);
+        this._api.deleteComment(update.id).then(() => {
+          this._commentsModel.deleteComment(update.film.id, update.id);
+          this._filmsModel.update(updateType, update.film);
+        });
         break;
     }
   }

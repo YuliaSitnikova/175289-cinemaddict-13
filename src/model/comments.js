@@ -7,16 +7,29 @@ export default class Comments extends Observer {
     this._comments = {};
   }
 
-  setComments(id, comments) {
-    this._comments[id] = comments;
+  setComments(film, comments) {
+    this._comments[film] = comments;
   }
 
-  getComments(id) {
-    if (!this._comments[id]) {
+  getComments(film) {
+    if (!this._comments[film]) {
       return null;
     }
 
-    return this._comments[id];
+    return this._comments[film];
+  }
+
+  deleteComment(film, id) {
+    const index = this._comments[film].findIndex((comment) => comment.id === id);
+
+    if (index === -1) {
+      throw new Error(`Can't delete unexisting comment`);
+    }
+
+    this._comments[film] = [
+      ...this._comments[film].slice(0, index),
+      ...this._comments[film].slice(index + 1)
+    ];
   }
 
   static adaptToClient(comment) {
