@@ -52,6 +52,7 @@ export default class Film {
   updatePopup(film) {
     const prevFilmPopupComponent = this._filmPopupComponent;
 
+    this._film = film;
     this._filmPopupComponent = new FilmPopupView(film);
     this._setPopupHandlers();
 

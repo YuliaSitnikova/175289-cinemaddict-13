@@ -92,14 +92,15 @@ const createFilmDetailsTemplate = (data) => {
     isWatch,
     isWatched,
     isFavorite,
-    showComments,
+    // showComments,
     selectedEmoji,
     message
   } = data;
 
+
   const tableTemplate = createFilmDetailsTable(data);
 
-  showComments = false;
+  const showComments = false;
   const commentsTemplate = showComments ? createFilmsDetailComments(comments) : ``;
 
   const addCommentTemplate = createFilmsDetailAddComment(selectedEmoji, message);
