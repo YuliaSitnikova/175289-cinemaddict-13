@@ -1,32 +1,58 @@
-import ProfileView from "./view/profile.js";
+import MenuView from "./view/menu";
+import StatisticsView from "./view/statistics";
 import FooterStatisticsView from "./view/footer-statictics";
 import {generateFilm} from "./mock/film";
 import FilterModel from "./model/filter";
 import FilmsModel from "./model/films";
+import ProfilePresenter from "./presenter/profile";
 import FilterPresenter from "./presenter/filter";
 import FilmsPresenter from "./presenter/films";
-import {render, RenderPlace} from "./utils/render";
+import {RenderPlace, render, remove} from "./utils/render";
+import {UpdateType} from "./constants";
 
-const FILMS_COUNT = 18;
+const FILMS_COUNT = 52;
 
-const siteHeaderElement = document.querySelector(`.header`);
-const siteMainElement = document.querySelector(`.main`);
-const siteFooterElement = document.querySelector(`.footer`);
-const statisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
+const siteHeader = document.querySelector(`.header`);
+const siteMain = document.querySelector(`.main`);
+const siteFooter = document.querySelector(`.footer`);
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
 const filterModel = new FilterModel();
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
 
-if (films.length !== 0) {
-  render(siteHeaderElement, new ProfileView(), RenderPlace.BEFOREEND);
-}
+const profilePresenter = new ProfilePresenter(siteHeader, filmsModel);
+profilePresenter.init();
 
-const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
+const menuComponent = new MenuView();
+render(siteMain, menuComponent, RenderPlace.BEFOREEND);
+
+const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
 filterPresenter.init();
 
-const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, filterModel);
+const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel);
 filmsPresenter.init();
 
-render(statisticsElement, new FooterStatisticsView(FILMS_COUNT), RenderPlace.BEFOREEND);
+render(siteFooter, new FooterStatisticsView(films.length), RenderPlace.BEFOREEND);
+
+let statisticsComponent = null;
+
+const handleFilterTypeChange = () => {
+  if (statisticsComponent !== null) {
+    remove(statisticsComponent);
+    statisticsComponent = null;
+    menuComponent.resetActiveItem();
+    filmsPresenter.init();
+  }
+};
+
+const handleStatisticsMenuClick = () => {
+  filmsPresenter.destroy();
+  filterModel.setFilter(UpdateType.MAJOR, null);
+  statisticsComponent = new StatisticsView(filmsModel.getFilms().filter((film) => film.isWatched));
+  render(siteMain, statisticsComponent, RenderPlace.BEFOREEND);
+};
+
+
+filterModel.addObserver(handleFilterTypeChange);
+menuComponent.setStatisticsClickHandler(handleStatisticsMenuClick);

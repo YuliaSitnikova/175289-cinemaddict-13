@@ -1,4 +1,4 @@
-import AbstractView from "./abstract";
+import Abstract from "./abstract";
 
 const createFilterItem = (item, currentFilter) => {
   const {name, count} = item;
@@ -12,17 +12,15 @@ const createFilterItem = (item, currentFilter) => {
 const createFilterTemplate = (items, currentFilter) => {
   const itemsTemplate = items.map((item) => createFilterItem(item, currentFilter)).join(``);
 
-  return `<nav class="main-navigation">
-    <div class="main-navigation__items">
-      ${itemsTemplate}
-    </div>
-    <a href="#stats" class="main-navigation__additional">Stats</a>
-  </nav>`;
+  return `<div class="main-navigation__items">
+    ${itemsTemplate}
+  </div>`;
 };
 
-export default class Filter extends AbstractView {
+export default class Filter extends Abstract {
   constructor(items, currentFilter) {
     super();
+
     this._items = items;
     this._currentFilter = currentFilter;
     this._itemClickHandler = this._itemClickHandler.bind(this);

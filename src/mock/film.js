@@ -75,7 +75,7 @@ const generateActors = () => {
 };
 
 const generateRelease = () => {
-  const maxDaysGap = 36500;
+  const maxDaysGap = 365 * 2;
   const daysGap = getRandomInteger(-maxDaysGap, 0);
 
   return dayjs().add(daysGap, `day`).toDate();

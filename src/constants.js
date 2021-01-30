@@ -13,6 +13,11 @@ export const SortType = {
   RATING: `rating`
 };
 
+export const FilmMode = {
+  DEFAULT: `default`,
+  POPUP: `popup`
+};
+
 export const UserAction = {
   UPDATE_FILM: `UPDATE_FILM`,
   ADD_COMMENT: `ADD_COMMENT`,
@@ -23,4 +28,12 @@ export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
   MAJOR: `MAJOR`
+};
+
+export const StatisticsFilterType = {
+  ALL: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
 };
