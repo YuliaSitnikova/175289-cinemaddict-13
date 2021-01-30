@@ -80,7 +80,7 @@ const createFilmsDetailAddComment = (selectedEmoji, message) => {
   </div>`;
 };
 
-const createFilmDetailsTemplate = (data) => {
+const createFilmDetailsTemplate = (data, comments) => {
   const {
     poster,
     title,
@@ -88,11 +88,10 @@ const createFilmDetailsTemplate = (data) => {
     rating,
     description,
     age,
-    comments,
     isWatch,
     isWatched,
     isFavorite,
-    // showComments,
+    showComments,
     selectedEmoji,
     message
   } = data;
@@ -100,7 +99,6 @@ const createFilmDetailsTemplate = (data) => {
 
   const tableTemplate = createFilmDetailsTable(data);
 
-  const showComments = false;
   const commentsTemplate = showComments ? createFilmsDetailComments(comments) : ``;
 
   const addCommentTemplate = createFilmsDetailAddComment(selectedEmoji, message);
@@ -166,9 +164,12 @@ const createFilmDetailsTemplate = (data) => {
 };
 
 export default class FilmPopup extends SmartView {
-  constructor(film) {
+  constructor(film, comments) {
     super();
+
+    this._comments = comments;
     this._data = this._parseFilmToData(film);
+
     this._popupScrollHandler = this._popupScrollHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -183,7 +184,7 @@ export default class FilmPopup extends SmartView {
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._data);
+    return createFilmDetailsTemplate(this._data, this._comments);
   }
 
   updateElement() {
@@ -210,7 +211,7 @@ export default class FilmPopup extends SmartView {
 
   _parseFilmToData(film) {
     const data = Object.assign({}, film, {
-      showComments: film.comments.length > 0,
+      showComments: this._comments.length > 0,
       scrollTop: 0,
       selectedEmoji: null,
       message: ``

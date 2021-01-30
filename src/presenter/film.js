@@ -2,16 +2,18 @@ import FilmCardView from "../view/film-card";
 import FilmPopupView from "../view/film-popup";
 import {FilmMode, UserAction, UpdateType} from "../constants";
 import {RenderPlace, render, remove, replace} from "../utils/render";
-import {generateId, generateUserName} from "../utils/common";
 import dayjs from "dayjs";
 
 export default class Film {
-  constructor(filmContainer, changeData, changeModeHandler, showPopupHandler, closePopupHandler) {
+  constructor(filmContainer, changeData, changeModeHandler, showPopupHandler, closePopupHandler, api) {
     this._filmsListComponent = filmContainer;
     this._changeData = changeData;
     this._changeModeHandler = changeModeHandler;
     this._showPopupHandler = showPopupHandler;
     this._closePopupHandler = closePopupHandler;
+    this._api = api;
+    this._comments = [];
+
     this._filmContainer = this._filmsListComponent.getElement().querySelector(`.films-list__container`);
     this._filmPopupContainer = document.body;
     this._film = null;
@@ -53,7 +55,7 @@ export default class Film {
     const prevFilmPopupComponent = this._filmPopupComponent;
 
     this._film = film;
-    this._filmPopupComponent = new FilmPopupView(film);
+    this._filmPopupComponent = new FilmPopupView(film, this._comments);
     this._setPopupHandlers();
 
     replace(this._filmPopupComponent, prevFilmPopupComponent);
@@ -91,7 +93,7 @@ export default class Film {
   _showPopup() {
     this._changeModeHandler();
 
-    this._filmPopupComponent = new FilmPopupView(this._film);
+    this._filmPopupComponent = new FilmPopupView(this._film, this._comments);
     this._setPopupHandlers();
     render(this._filmPopupContainer, this._filmPopupComponent, RenderPlace.BEFOREEND);
     // this._filmPopupContainer.appendChild(this._filmPopupComponent.getElement());
@@ -100,6 +102,12 @@ export default class Film {
     this._mode = FilmMode.POPUP;
     document.addEventListener(`keydown`, this._documentKeydownHandler);
     this._showPopupHandler(this._film.id);
+
+    this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._comments = comments;
+        this.updatePopup(this._film);
+      });
   }
 
   _documentKeydownHandler(evt) {
@@ -141,8 +149,6 @@ export default class Film {
 
   _handleFormKeypress(emoji, message) {
     const newComment = {
-      id: generateId(),
-      name: generateUserName(),
       date: dayjs(),
       emoji,
       message
