@@ -92,13 +92,15 @@ const createFilmDetailsTemplate = (data) => {
     isWatch,
     isWatched,
     isFavorite,
-    showComments,
+    // showComments,
     selectedEmoji,
     message
   } = data;
 
+
   const tableTemplate = createFilmDetailsTable(data);
 
+  const showComments = false;
   const commentsTemplate = showComments ? createFilmsDetailComments(comments) : ``;
 
   const addCommentTemplate = createFilmsDetailAddComment(selectedEmoji, message);
@@ -113,7 +115,7 @@ const createFilmDetailsTemplate = (data) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${poster}" alt="">
 
-            <p class="film-details__age">${age}</p>
+            <p class="film-details__age">${age}+</p>
           </div>
 
           <div class="film-details__info">

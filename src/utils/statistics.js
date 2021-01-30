@@ -54,8 +54,8 @@ export const getTopGenre = (films) => {
 
 export const filter = {
   [StatisticsFilterType.ALL]: (films) => films,
-  [StatisticsFilterType.TODAY]: (films) => films.filter((film) => dayjs(film.release).isAfter(dayjs().subtract(1, `day`))),
-  [StatisticsFilterType.WEEK]: (films) => films.filter((film) => dayjs(film.release).isAfter(dayjs().subtract(1, `week`))),
-  [StatisticsFilterType.MONTH]: (films) => films.filter((film) => dayjs(film.release).isAfter(dayjs().subtract(1, `month`))),
-  [StatisticsFilterType.YEAR]: (films) => films.filter((film) => dayjs(film.release).isAfter(dayjs().subtract(1, `year`)))
+  [StatisticsFilterType.TODAY]: (films) => films.filter((film) => dayjs(film.watchingDate).isAfter(dayjs().subtract(1, `day`))),
+  [StatisticsFilterType.WEEK]: (films) => films.filter((film) => dayjs(film.watchingDate).isAfter(dayjs().subtract(1, `week`))),
+  [StatisticsFilterType.MONTH]: (films) => films.filter((film) => dayjs(film.watchingDate).isAfter(dayjs().subtract(1, `month`))),
+  [StatisticsFilterType.YEAR]: (films) => films.filter((film) => dayjs(film.watchingDate).isAfter(dayjs().subtract(1, `year`)))
 };
