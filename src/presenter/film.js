@@ -70,6 +70,14 @@ export default class Film {
   }
 
   setViewState(state, comment) {
+    const resetViewState = () => {
+      this._filmPopupComponent.updateData({
+        isSavingComment: false,
+        isDeletingComment: false,
+        deletingComment: null
+      }, true);
+    };
+
     switch (state) {
       case FilmState.SAVING_COMMENT:
         this._filmPopupComponent.updateData({
@@ -81,6 +89,9 @@ export default class Film {
           isDeletingComment: true,
           deletingComment: comment
         }, true);
+        break;
+      case FilmState.ABORTING:
+        this._filmPopupComponent.shake(resetViewState);
         break;
     }
   }
@@ -125,7 +136,8 @@ export default class Film {
         this._commentsModel.setComments(this._film.id, comments);
         this._comments = comments;
         this.updatePopup(this._film);
-      });
+      })
+      .catch(() => this._commentsModel.setComments(this._film.id, []));
   }
 
   _documentKeypressHandler(evt) {

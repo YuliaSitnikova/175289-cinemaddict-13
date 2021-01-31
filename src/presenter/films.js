@@ -98,17 +98,21 @@ export default class Films {
         break;
       case UserAction.ADD_COMMENT:
         this._filmPresenters.popup.presenter.setViewState(FilmState.SAVING_COMMENT);
-        this._api.addComment(update).then((response) => {
-          this._commentsModel.setComments(response.film.id, response.comments);
-          this._filmsModel.update(updateType, response.film);
-        });
+        this._api.addComment(update)
+          .then((response) => {
+            this._commentsModel.setComments(response.film.id, response.comments);
+            this._filmsModel.update(updateType, response.film);
+          })
+          .catch(() => this._filmPresenters.popup.presenter.setViewState(FilmState.ABORTING));
         break;
       case UserAction.DELETE_COMMENT:
         this._filmPresenters.popup.presenter.setViewState(FilmState.DELETING_COMMENT, update.id);
-        this._api.deleteComment(update.id).then(() => {
-          this._commentsModel.deleteComment(update.film.id, update.id);
-          this._filmsModel.update(updateType, update.film);
-        });
+        this._api.deleteComment(update.id)
+          .then(() => {
+            this._commentsModel.deleteComment(update.film.id, update.id);
+            this._filmsModel.update(updateType, update.film);
+          })
+          .catch(() => this._filmPresenters.popup.presenter.setViewState(FilmState.ABORTING));
         break;
     }
   }

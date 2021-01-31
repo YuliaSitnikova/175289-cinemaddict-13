@@ -21,6 +21,7 @@ export const FilmMode = {
 export const FilmState = {
   SAVING_COMMENT: `SAVING_COMMENT`,
   DELETING_COMMENT: `DELETING_COMMENT`,
+  ABORTING: `ABORTING`
 };
 
 export const UserAction = {
