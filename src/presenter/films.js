@@ -234,7 +234,7 @@ export default class Films {
   }
 
   _renderFilm(filmContainer, filmPresenters, film) {
-    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewChange, this._handleChangeMode, this._handlePopupShow, this._handlePopupClose);
+    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewChange, this._handleChangeMode, this._handlePopupShow, this._handlePopupClose, this._api);
     filmPresenter.init(film);
     filmPresenters[film.id] = filmPresenter;
   }
