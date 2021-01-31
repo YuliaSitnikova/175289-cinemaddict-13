@@ -102,6 +102,7 @@ export default class Films {
           .then((response) => {
             this._commentsModel.setComments(response.film.id, response.comments);
             this._filmsModel.update(updateType, response.film);
+            this._handleCommentUpdate();
           })
           .catch(() => this._filmPresenters.popup.presenter.setViewState(FilmState.ABORTING));
         break;
@@ -111,6 +112,7 @@ export default class Films {
           .then(() => {
             this._commentsModel.deleteComment(update.film.id, update.id);
             this._filmsModel.update(updateType, update.film);
+            this._handleCommentUpdate();
           })
           .catch(() => this._filmPresenters.popup.presenter.setViewState(FilmState.ABORTING));
         break;
@@ -147,6 +149,17 @@ export default class Films {
 
     if (update && update.id === this._filmPresenters.popup.id) {
       this._filmPresenters.popup.presenter.updatePopup(update);
+    }
+  }
+
+  _handleCommentUpdate() {
+    remove(this._filmsCommentedListComponent);
+
+    const commentedFilms = this._getCommentedFilms();
+    const commentedFilmsCount = commentedFilms.length;
+
+    if (commentedFilmsCount > 0) {
+      this._renderCommentedFilmsList(commentedFilms.slice(0, Math.min(commentedFilmsCount, FILMS_EXTRA_COUNT)));
     }
   }
 

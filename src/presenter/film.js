@@ -207,7 +207,7 @@ export default class Film {
       }),
       id
     };
-    this._changeData(UserAction.DELETE_COMMENT, UpdateType.MINOR, update);
+    this._changeData(UserAction.DELETE_COMMENT, UpdateType.PATCH, update);
   }
 
   _setHandlers() {
