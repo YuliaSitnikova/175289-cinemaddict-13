@@ -7,7 +7,7 @@ import NoFilmsView from "../view/no-films";
 import Loading from "../view/loading";
 import ShowMoreButtonView from "../view/show-more-button";
 import FilmPresenter from "./film";
-import {FilterType, SortType, FilmMode, UserAction, UpdateType} from "../constants";
+import {FilterType, SortType, FilmMode, FilmState, UserAction, UpdateType} from "../constants";
 import {RenderPlace, render, remove} from "../utils/render";
 import {filter} from "../utils/filter";
 import dayjs from "dayjs";
@@ -97,12 +97,14 @@ export default class Films {
         });
         break;
       case UserAction.ADD_COMMENT:
+        this._filmPresenters.popup.presenter.setViewState(FilmState.SAVING_COMMENT);
         this._api.addComment(update).then((response) => {
           this._commentsModel.setComments(response.film.id, response.comments);
           this._filmsModel.update(updateType, response.film);
         });
         break;
       case UserAction.DELETE_COMMENT:
+        this._filmPresenters.popup.presenter.setViewState(FilmState.DELETING_COMMENT, update.id);
         this._api.deleteComment(update.id).then(() => {
           this._commentsModel.deleteComment(update.film.id, update.id);
           this._filmsModel.update(updateType, update.film);

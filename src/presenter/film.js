@@ -1,6 +1,6 @@
 import FilmCardView from "../view/film-card";
 import FilmPopupView from "../view/film-popup";
-import {FilmMode, UserAction, UpdateType} from "../constants";
+import {FilmMode, FilmState, UserAction, UpdateType} from "../constants";
 import {RenderPlace, render, remove, replace} from "../utils/render";
 import dayjs from "dayjs";
 
@@ -69,6 +69,22 @@ export default class Film {
     }
   }
 
+  setViewState(state, comment) {
+    switch (state) {
+      case FilmState.SAVING_COMMENT:
+        this._filmPopupComponent.updateData({
+          isSavingComment: true
+        }, true);
+        break;
+      case FilmState.DELETING_COMMENT:
+        this._filmPopupComponent.updateData({
+          isDeletingComment: true,
+          deletingComment: comment
+        }, true);
+        break;
+    }
+  }
+
   destroy() {
     remove(this._filmComponent);
   }
@@ -118,7 +134,7 @@ export default class Film {
       const emoji = data.selectedEmoji;
       const message = data.message;
 
-      if (emoji === null || message === ``) {
+      if (data.isSavingComment || emoji === null || message === ``) {
         return;
       }
 

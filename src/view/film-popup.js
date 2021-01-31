@@ -40,7 +40,7 @@ const createFilmDetailsTable = (data) => {
   </table>`;
 };
 
-const createFilmsDetailComments = (comments) => {
+const createFilmsDetailComments = (comments, isDeletingComment, deletingComment) => {
   return comments.map(({id, name, date, emoji, message}) => `<li class="film-details__comment" data-id="${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
@@ -50,18 +50,18 @@ const createFilmsDetailComments = (comments) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${name}</span>
         <span class="film-details__comment-day">${formatCommentDate(date)}</span>
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" ${isDeletingComment ? `disabled` : ``}>${deletingComment === id ? `Deleting...` : `Delete`}</button>
       </p>
     </div>
   </li>`).join(``);
 };
 
-const createFilmsDetailAddComment = (selectedEmoji, message) => {
+const createFilmsDetailAddComment = (selectedEmoji, message, isSavingComment) => {
   return `<div class="film-details__new-comment">
     <div class="film-details__add-emoji-label">${selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}">` : ``}</div>
 
     <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${message}</textarea>
+      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSavingComment ? `disabled` : ``}>${message}</textarea>
     </label>
 
     <div class="film-details__emoji-list">
@@ -72,6 +72,7 @@ const createFilmsDetailAddComment = (selectedEmoji, message) => {
         id="emoji-${emoji}"
         value="${emoji}"
         ${selectedEmoji === emoji ? `checked` : ``}
+        ${isSavingComment ? `disabled` : ``}
       >
       <label class="film-details__emoji-label" for="emoji-${emoji}">
         <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
@@ -93,15 +94,18 @@ const createFilmDetailsTemplate = (data, comments) => {
     isFavorite,
     showComments,
     selectedEmoji,
-    message
+    message,
+    isSavingComment,
+    isDeletingComment,
+    deletingComment
   } = data;
 
 
   const tableTemplate = createFilmDetailsTable(data);
 
-  const commentsTemplate = showComments ? createFilmsDetailComments(comments) : ``;
+  const commentsTemplate = showComments ? createFilmsDetailComments(comments, isDeletingComment, deletingComment) : ``;
 
-  const addCommentTemplate = createFilmsDetailAddComment(selectedEmoji, message);
+  const addCommentTemplate = createFilmsDetailAddComment(selectedEmoji, message, isSavingComment);
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -220,7 +224,10 @@ export default class FilmPopup extends SmartView {
       showComments: this._comments !== null ? this._comments.length > 0 : false,
       scrollTop: 0,
       selectedEmoji: null,
-      message: ``
+      message: ``,
+      isSavingComment: false,
+      isDeletingComment: false,
+      deletingComment: null
     });
 
     return data;
@@ -233,6 +240,9 @@ export default class FilmPopup extends SmartView {
     delete film.scrollTop;
     delete film.selectedEmoji;
     delete film.message;
+    delete film.isSavingComment;
+    delete film.isDeletingComment;
+    delete film.deletingComment;
 
     return film;
   }
