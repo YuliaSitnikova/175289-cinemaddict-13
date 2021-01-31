@@ -1,7 +1,6 @@
 import MenuView from "./view/menu";
 import StatisticsView from "./view/statistics";
 import FooterStatisticsView from "./view/footer-statictics";
-import {generateFilm} from "./mock/film";
 import FilterModel from "./model/filter";
 import FilmsModel from "./model/films";
 import ProfilePresenter from "./presenter/profile";
@@ -9,31 +8,31 @@ import FilterPresenter from "./presenter/filter";
 import FilmsPresenter from "./presenter/films";
 import {RenderPlace, render, remove} from "./utils/render";
 import {UpdateType} from "./constants";
+import Api from "./api";
 
-const FILMS_COUNT = 52;
+const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
+const AUTHORIZATION = `Basic 1lgrFiAqmJHH`;
 
 const siteHeader = document.querySelector(`.header`);
 const siteMain = document.querySelector(`.main`);
 const siteFooter = document.querySelector(`.footer`);
 
-const films = new Array(FILMS_COUNT).fill().map(generateFilm);
+const api = new Api(END_POINT, AUTHORIZATION);
+
 const filterModel = new FilterModel();
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
 
 const profilePresenter = new ProfilePresenter(siteHeader, filmsModel);
-profilePresenter.init();
-
 const menuComponent = new MenuView();
-render(siteMain, menuComponent, RenderPlace.BEFOREEND);
-
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
+const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel, api);
+const footerStatisticsComponent = new FooterStatisticsView();
+
+profilePresenter.init();
+render(siteMain, menuComponent, RenderPlace.BEFOREEND);
 filterPresenter.init();
-
-const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel);
 filmsPresenter.init();
-
-render(siteFooter, new FooterStatisticsView(films.length), RenderPlace.BEFOREEND);
+render(siteFooter, footerStatisticsComponent, RenderPlace.BEFOREEND);
 
 let statisticsComponent = null;
 
@@ -53,6 +52,21 @@ const handleStatisticsMenuClick = () => {
   render(siteMain, statisticsComponent, RenderPlace.BEFOREEND);
 };
 
+api.getFilms()
+  .then((films) => {
+    filmsModel.setFilms(UpdateType.INIT, films);
 
-filterModel.addObserver(handleFilterTypeChange);
-menuComponent.setStatisticsClickHandler(handleStatisticsMenuClick);
+    filterModel.addObserver(handleFilterTypeChange);
+    menuComponent.setStatisticsClickHandler(handleStatisticsMenuClick);
+
+    footerStatisticsComponent.setCount(films.length);
+    remove(footerStatisticsComponent);
+    render(siteFooter, footerStatisticsComponent, RenderPlace.BEFOREEND);
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
+
+    filterModel.addObserver(handleFilterTypeChange);
+    menuComponent.setStatisticsClickHandler(handleStatisticsMenuClick);
+  });
+
