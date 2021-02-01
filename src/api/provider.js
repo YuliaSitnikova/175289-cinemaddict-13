@@ -1,4 +1,4 @@
-import FilmModel from "../model/films";
+import FilmsModel from "../model/films";
 
 const createStoreStructure = (items) => {
   return items.reduce((acc, current) => {
@@ -19,7 +19,7 @@ export default class Provider {
     if (this.isOnline()) {
       return this._api.getFilms()
         .then((films) => {
-          const items = createStoreStructure(films.map(FilmModel.adaptToServer));
+          const items = createStoreStructure(films.map(FilmsModel.adaptToServer));
           this._store.setItems(items);
           this._syncedWithServer = true;
           return films;
@@ -28,25 +28,27 @@ export default class Provider {
 
     const storeFilms = Object.values(this._store.getItems());
 
-    return Promise.resolve(storeFilms.map(FilmModel.adaptToClient));
+    return Promise.resolve(storeFilms.map(FilmsModel.adaptToClient));
   }
 
-  getComments(filmId) {
+  getComments(id) {
     if (this.isOnline()) {
-      return this._api.getComments(filmId);
+      return this._api.getComments(id);
     }
+
+    return Promise.reject(new Error(`Load comments failed`));
   }
 
   updateFilm(film) {
     if (this.isOnline()) {
       return this._api.updateFilm(film)
         .then((updatedFilm) => {
-          this._store.setItem(updatedFilm.id, FilmModel.adaptToServer(updatedFilm));
+          this._store.setItem(updatedFilm.id, FilmsModel.adaptToServer(updatedFilm));
           return updatedFilm;
         });
     }
 
-    this._store.setItem(film.id, FilmModel.adaptToServer(Object.assign({}, film)));
+    this._store.setItem(film.id, FilmsModel.adaptToServer(Object.assign({}, film)));
     this._syncedWithServer = false;
 
     return Promise.resolve(film);
@@ -54,14 +56,25 @@ export default class Provider {
 
   addComment(data) {
     if (this.isOnline()) {
-      return this._api.addComment(data);
+      return this._api.addComment(data)
+        .then(({updatedFilm, comments}) => {
+          this._store.setItem(updatedFilm.id, FilmsModel.adaptToServer(updatedFilm));
+          return {updatedFilm, comments};
+        });
     }
+
+    return Promise.reject(new Error(`Add comment failed`));
   }
 
-  deleteComment(commentId) {
+  deleteComment(data) {
     if (this.isOnline()) {
-      return this._api.deleteComment(commentId);
+      return this._api.deleteComment(data)
+        .then(() => {
+          this._store.setItem(data.film.id, FilmsModel.adaptToServer(data.film));
+        });
     }
+
+    return Promise.reject(new Error(`Delete comment failed`));
   }
 
   sync() {

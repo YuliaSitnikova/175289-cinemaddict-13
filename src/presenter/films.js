@@ -99,18 +99,18 @@ export default class Films {
       case UserAction.ADD_COMMENT:
         this._filmPresenters.popup.presenter.setViewState(FilmState.SAVING_COMMENT);
         this._api.addComment(update)
-          .then((response) => {
-            this._commentsModel.setComments(response.film.id, response.comments);
-            this._filmsModel.update(updateType, response.film);
+          .then(({updatedFilm, comments}) => {
+            this._commentsModel.setComments(updatedFilm.id, comments);
+            this._filmsModel.update(updateType, updatedFilm);
             this._handleCommentUpdate();
           })
           .catch(() => this._filmPresenters.popup.presenter.setViewState(FilmState.ABORTING));
         break;
       case UserAction.DELETE_COMMENT:
-        this._filmPresenters.popup.presenter.setViewState(FilmState.DELETING_COMMENT, update.id);
-        this._api.deleteComment(update.id)
+        this._filmPresenters.popup.presenter.setViewState(FilmState.DELETING_COMMENT, update.comment.id);
+        this._api.deleteComment(update)
           .then(() => {
-            this._commentsModel.deleteComment(update.film.id, update.id);
+            this._commentsModel.deleteComment(update.film.id, update.comment.id);
             this._filmsModel.update(updateType, update.film);
             this._handleCommentUpdate();
           })

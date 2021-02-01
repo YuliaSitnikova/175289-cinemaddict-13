@@ -140,6 +140,13 @@ export default class Film {
       .catch(() => this._commentsModel.setComments(this._film.id, []));
   }
 
+  _documentKeydownHandler(evt) {
+    if (evt.key === `Esc` || evt.key === `Escape`) {
+      evt.preventDefault();
+      this._hidePopup();
+    }
+  }
+
   _documentKeypressHandler(evt) {
     if (evt.ctrlKey && evt.keyCode === 10) {
       const data = this._filmPopupComponent.getData();
@@ -151,7 +158,7 @@ export default class Film {
       }
 
       const update = {
-        id: this._film.id,
+        film: this._film,
         comment: {
           date: dayjs().toDate(),
           emoji,
@@ -160,13 +167,6 @@ export default class Film {
       };
 
       this._changeData(UserAction.ADD_COMMENT, UpdateType.PATCH, update);
-    }
-  }
-
-  _documentKeydownHandler(evt) {
-    if (evt.key === `Esc` || evt.key === `Escape`) {
-      evt.preventDefault();
-      this._hidePopup();
     }
   }
 
@@ -205,7 +205,9 @@ export default class Film {
       film: Object.assign({}, this._film, {
         comments: this._film.comments.filter((comment) => comment !== id)
       }),
-      id
+      comment: {
+        id
+      }
     };
     this._changeData(UserAction.DELETE_COMMENT, UpdateType.PATCH, update);
   }
