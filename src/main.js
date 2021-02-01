@@ -9,16 +9,23 @@ import FilterPresenter from "./presenter/filter";
 import FilmsPresenter from "./presenter/films";
 import {RenderPlace, render, remove} from "./utils/render";
 import {UpdateType} from "./constants";
-import Api from "./api";
+import Api from "./api/api";
+import Store from "./api/store";
+import Provider from "./api/provider";
 
 const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
 const AUTHORIZATION = `Basic 1lgrFiAqmJHH`;
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v13`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const siteHeader = document.querySelector(`.header`);
 const siteMain = document.querySelector(`.main`);
 const siteFooter = document.querySelector(`.footer`);
 
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const filterModel = new FilterModel();
 const filmsModel = new FilmsModel();
@@ -27,7 +34,7 @@ const commentsModel = new CommentsModel();
 const profilePresenter = new ProfilePresenter(siteHeader, filmsModel);
 const menuComponent = new MenuView();
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
-const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, commentsModel, filterModel, api);
+const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, commentsModel, filterModel, apiWithProvider);
 const footerStatisticsComponent = new FooterStatisticsView();
 
 profilePresenter.init();
@@ -54,7 +61,7 @@ const handleStatisticsMenuClick = () => {
   render(siteMain, statisticsComponent, RenderPlace.BEFOREEND);
 };
 
-api.getFilms()
+apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
 
@@ -72,3 +79,17 @@ api.getFilms()
     menuComponent.setStatisticsClickHandler(handleStatisticsMenuClick);
   });
 
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  if (!apiWithProvider.isSynced()) {
+    apiWithProvider.sync();
+  }
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});
