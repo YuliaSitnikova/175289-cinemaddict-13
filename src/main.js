@@ -9,7 +9,7 @@ import FilterPresenter from "./presenter/filter";
 import FilmsPresenter from "./presenter/films";
 import {RenderPlace, render, remove} from "./utils/render";
 import {UpdateType} from "./constants";
-import Api from "./api";
+import Api from "./api/api";
 
 const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
 const AUTHORIZATION = `Basic 1lgrFiAqmJHH`;
