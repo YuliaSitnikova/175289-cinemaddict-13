@@ -3,6 +3,7 @@ import StatisticsView from "./view/statistics";
 import FooterStatisticsView from "./view/footer-statictics";
 import FilterModel from "./model/filter";
 import FilmsModel from "./model/films";
+import CommentsModel from "./model/comments";
 import ProfilePresenter from "./presenter/profile";
 import FilterPresenter from "./presenter/filter";
 import FilmsPresenter from "./presenter/films";
@@ -21,11 +22,12 @@ const api = new Api(END_POINT, AUTHORIZATION);
 
 const filterModel = new FilterModel();
 const filmsModel = new FilmsModel();
+const commentsModel = new CommentsModel();
 
 const profilePresenter = new ProfilePresenter(siteHeader, filmsModel);
 const menuComponent = new MenuView();
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
-const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel, api);
+const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, commentsModel, filterModel, api);
 const footerStatisticsComponent = new FooterStatisticsView();
 
 profilePresenter.init();

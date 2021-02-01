@@ -18,6 +18,12 @@ export const FilmMode = {
   POPUP: `popup`
 };
 
+export const FilmState = {
+  SAVING_COMMENT: `SAVING_COMMENT`,
+  DELETING_COMMENT: `DELETING_COMMENT`,
+  ABORTING: `ABORTING`
+};
+
 export const UserAction = {
   UPDATE_FILM: `UPDATE_FILM`,
   ADD_COMMENT: `ADD_COMMENT`,

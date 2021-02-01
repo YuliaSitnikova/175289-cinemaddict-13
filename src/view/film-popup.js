@@ -40,7 +40,7 @@ const createFilmDetailsTable = (data) => {
   </table>`;
 };
 
-const createFilmsDetailComments = (comments) => {
+const createFilmsDetailComments = (comments, isDeletingComment, deletingComment) => {
   return comments.map(({id, name, date, emoji, message}) => `<li class="film-details__comment" data-id="${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
@@ -50,18 +50,18 @@ const createFilmsDetailComments = (comments) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${name}</span>
         <span class="film-details__comment-day">${formatCommentDate(date)}</span>
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" ${isDeletingComment ? `disabled` : ``}>${deletingComment === id ? `Deleting...` : `Delete`}</button>
       </p>
     </div>
   </li>`).join(``);
 };
 
-const createFilmsDetailAddComment = (selectedEmoji, message) => {
+const createFilmsDetailAddComment = (selectedEmoji, message, isSavingComment) => {
   return `<div class="film-details__new-comment">
     <div class="film-details__add-emoji-label">${selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}">` : ``}</div>
 
     <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${message}</textarea>
+      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSavingComment ? `disabled` : ``}>${message}</textarea>
     </label>
 
     <div class="film-details__emoji-list">
@@ -72,6 +72,7 @@ const createFilmsDetailAddComment = (selectedEmoji, message) => {
         id="emoji-${emoji}"
         value="${emoji}"
         ${selectedEmoji === emoji ? `checked` : ``}
+        ${isSavingComment ? `disabled` : ``}
       >
       <label class="film-details__emoji-label" for="emoji-${emoji}">
         <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
@@ -93,15 +94,18 @@ const createFilmDetailsTemplate = (data, comments) => {
     isFavorite,
     showComments,
     selectedEmoji,
-    message
+    message,
+    isSavingComment,
+    isDeletingComment,
+    deletingComment
   } = data;
 
 
   const tableTemplate = createFilmDetailsTable(data);
 
-  const commentsTemplate = showComments ? createFilmsDetailComments(comments) : ``;
+  const commentsTemplate = showComments ? createFilmsDetailComments(comments, isDeletingComment, deletingComment) : ``;
 
-  const addCommentTemplate = createFilmsDetailAddComment(selectedEmoji, message);
+  const addCommentTemplate = createFilmsDetailAddComment(selectedEmoji, message, isSavingComment);
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -150,7 +154,7 @@ const createFilmDetailsTemplate = (data, comments) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${data.comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
             ${commentsTemplate}
@@ -175,7 +179,6 @@ export default class FilmPopup extends SmartView {
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-    this._formKeypressHandler = this._formKeypressHandler.bind(this);
     this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
     this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
@@ -193,13 +196,20 @@ export default class FilmPopup extends SmartView {
     this.getElement().scroll(0, this._data.scrollTop);
   }
 
+  getData() {
+    return this._data;
+  }
+
+  setData() {
+
+  }
+
   restoreHandlers() {
     this._setHandlers();
     this.setCloseClickHandler(this._callback.closeClick);
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
-    this.setFormKeypressHandler(this._callback.formKeypress);
     this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
   }
 
@@ -211,10 +221,13 @@ export default class FilmPopup extends SmartView {
 
   _parseFilmToData(film) {
     const data = Object.assign({}, film, {
-      showComments: this._comments.length > 0,
+      showComments: this._comments !== null ? this._comments.length > 0 : false,
       scrollTop: 0,
       selectedEmoji: null,
-      message: ``
+      message: ``,
+      isSavingComment: false,
+      isDeletingComment: false,
+      deletingComment: null
     });
 
     return data;
@@ -227,6 +240,9 @@ export default class FilmPopup extends SmartView {
     delete film.scrollTop;
     delete film.selectedEmoji;
     delete film.message;
+    delete film.isSavingComment;
+    delete film.isDeletingComment;
+    delete film.deletingComment;
 
     return film;
   }
@@ -255,14 +271,6 @@ export default class FilmPopup extends SmartView {
   _favoriteClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoriteClick();
-  }
-
-  _formKeypressHandler(evt) {
-    if (evt.ctrlKey && evt.keyCode === 10) {
-      const emoji = this._data.selectedEmoji;
-      const message = this._data.message;
-      this._callback.formKeypress(emoji, message);
-    }
   }
 
   _deleteCommentClickHandler(evt) {
@@ -305,11 +313,6 @@ export default class FilmPopup extends SmartView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
-  }
-
-  setFormKeypressHandler(callback) {
-    this._callback.formKeypress = callback;
-    this.getElement(`film-details__new-comment`).addEventListener(`keypress`, this._formKeypressHandler);
   }
 
   setDeleteCommentClickHandler(callback) {
