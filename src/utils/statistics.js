@@ -12,7 +12,7 @@ export const getRank = (filmCount) => {
     return `Fan`;
   }
 
-  if (filmCount > 1) {
+  if (filmCount > 0) {
     return `Novice`;
   }
 
