@@ -72,3 +72,6 @@ api.getFilms()
     menuComponent.setStatisticsClickHandler(handleStatisticsMenuClick);
   });
 
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
