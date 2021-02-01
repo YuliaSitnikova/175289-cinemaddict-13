@@ -61,11 +61,15 @@ export default class Api {
       });
   }
 
-  deleteComment(id) {
+  deleteComment(commentId) {
     return this._load({
-      url: `comments/${id}`,
+      url: `comments/${commentId}`,
       method: Method.DELETE,
     });
+  }
+
+  sync() {
+
   }
 
   _load({
