@@ -200,10 +200,6 @@ export default class FilmPopup extends SmartView {
     return this._data;
   }
 
-  setData() {
-
-  }
-
   restoreHandlers() {
     this._setHandlers();
     this.setCloseClickHandler(this._callback.closeClick);
@@ -231,20 +227,6 @@ export default class FilmPopup extends SmartView {
     });
 
     return data;
-  }
-
-  _parseDataToFilm(data) {
-    const film = Object.assign({}, data);
-
-    delete film.showComments;
-    delete film.scrollTop;
-    delete film.selectedEmoji;
-    delete film.message;
-    delete film.isSavingComment;
-    delete film.isDeletingComment;
-    delete film.deletingComment;
-
-    return film;
   }
 
   _popupScrollHandler() {

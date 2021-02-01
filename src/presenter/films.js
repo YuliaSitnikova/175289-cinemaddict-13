@@ -81,7 +81,7 @@ export default class Films {
   }
 
   destroy() {
-    this._clearFilms({resetSortType: true});
+    this._clearFilms({resetRenderedFilmCount: true, resetSortType: true});
 
     remove(this._filmsComponent);
 
@@ -169,7 +169,7 @@ export default class Films {
     }
 
     this._currentSortType = sortType;
-    this._clearFilms();
+    this._clearFilms({resetRenderedFilmCount: true});
     this._renderFilms();
   }
 
@@ -364,12 +364,11 @@ export default class Films {
       this._renderNoFilms();
     } else {
       this._renderSort();
-
-      render(this._filmsComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
       this._renderFilmsElements(films.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
       if (filmsCount > this._renderedFilmsCount) {
         this._renderShowMoreButton();
       }
+      render(this._filmsComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
     }
 
     const popularFilms = this._getPopularFilms();

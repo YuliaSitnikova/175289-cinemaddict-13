@@ -1,8 +1,9 @@
 import FilmsModel from "../model/films";
+import {toast} from "../utils/toast/toast";
 
 const createStoreStructure = (items) => {
-  return items.reduce((acc, current) => {
-    return Object.assign({}, acc, {
+  return items.reduce((accumulator, current) => {
+    return Object.assign({}, accumulator, {
       [current.id]: current
     });
   }, {});
@@ -63,6 +64,7 @@ export default class Provider {
         });
     }
 
+    toast(`You can't add comment offline`);
     return Promise.reject(new Error(`Add comment failed`));
   }
 
@@ -74,6 +76,7 @@ export default class Provider {
         });
     }
 
+    toast(`You can't delete comment offline`);
     return Promise.reject(new Error(`Delete comment failed`));
   }
 

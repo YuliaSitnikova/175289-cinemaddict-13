@@ -141,14 +141,14 @@ export default class Film {
   }
 
   _documentKeydownHandler(evt) {
-    if (evt.key === `Esc` || evt.key === `Escape`) {
+    if (evt.code === `Esc` || evt.code === `Escape`) {
       evt.preventDefault();
       this._hidePopup();
     }
   }
 
   _documentKeypressHandler(evt) {
-    if (evt.ctrlKey && evt.keyCode === 10) {
+    if (evt.ctrlKey && evt.code === `Enter`) {
       const data = this._filmPopupComponent.getData();
       const emoji = data.selectedEmoji;
       const message = data.message;
