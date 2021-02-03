@@ -340,11 +340,7 @@ export default class Films {
     remove(this._filmsPopularListComponent);
     remove(this._filmsCommentedListComponent);
 
-    if (resetRenderedFilmCount) {
-      this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
-    } else {
-      this._renderedFilmsCount = Math.min(this._getFilms().length, this._renderedFilmsCount);
-    }
+    this._renderedFilmsCount = resetRenderedFilmCount ? FILMS_COUNT_PER_STEP : Math.min(this._getFilms().length, this._renderedFilmsCount);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;

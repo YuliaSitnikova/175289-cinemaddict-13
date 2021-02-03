@@ -93,7 +93,7 @@ const createStatisticRankTemplate = (userRank) => {
 const createStatisticTemplate = (data) => {
   const {films, currentFilter, userRank} = data;
   const rankTemplate = userRank ? createStatisticRankTemplate(userRank) : ``;
-  const {hours, minutes} = getTotalDuration(films);
+  const {hoursCount, minutesCount} = getTotalDuration(films);
   const topGenre = getTopGenre(films);
 
   return `<section class="statistic">
@@ -126,7 +126,7 @@ const createStatisticTemplate = (data) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">${hours} <span class="statistic__item-description">h</span> ${minutes} <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text">${hoursCount} <span class="statistic__item-description">h</span> ${minutesCount} <span class="statistic__item-description">m</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>

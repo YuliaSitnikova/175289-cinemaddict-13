@@ -21,10 +21,11 @@ export const getRank = (filmCount) => {
 
 export const getTotalDuration = (films) => {
   const totalDuration = films.reduce((accumulator, film) => accumulator + film.duration, 0);
-  const hours = dayjs.duration(totalDuration, `m`).hours();
-  const minutes = dayjs.duration(totalDuration, `m`).minutes();
 
-  return {hours, minutes};
+  const hoursCount = Math.floor(dayjs.duration(totalDuration, `minutes`).asHours());
+  const minutesCount = dayjs.duration(totalDuration, `minutes`).minutes();
+
+  return {hoursCount, minutesCount};
 };
 
 export const getGenresStats = (films) => {
@@ -53,7 +54,7 @@ export const getTopGenre = (films) => {
 };
 
 export const filter = {
-  [StatisticsFilterType.ALL]: (films) => films,
+  [StatisticsFilterType.ALL]: (films) => films.slice(),
   [StatisticsFilterType.TODAY]: (films) => films.filter((film) => dayjs(film.watchingDate).isAfter(dayjs().subtract(1, `day`))),
   [StatisticsFilterType.WEEK]: (films) => films.filter((film) => dayjs(film.watchingDate).isAfter(dayjs().subtract(1, `week`))),
   [StatisticsFilterType.MONTH]: (films) => films.filter((film) => dayjs(film.watchingDate).isAfter(dayjs().subtract(1, `month`))),

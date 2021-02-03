@@ -15,9 +15,7 @@ import Provider from "./api/provider";
 
 const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
 const AUTHORIZATION = `Basic 1lgrFiAqmJHH`;
-const STORE_PREFIX = `cinemaddict-localstorage`;
-const STORE_VER = `v13`;
-const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+const STORE_NAME = `cinemaddict-localstorage-v13`;
 
 const siteHeader = document.querySelector(`.header`);
 const siteMain = document.querySelector(`.main`);

@@ -4,19 +4,15 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-export const formatFilmDuration = (durationInMinutes) => {
-  if (!durationInMinutes) {
+export const formatFilmDuration = (filmDuration) => {
+  if (!filmDuration) {
     return ``;
   }
 
-  const millisecondsPerMinute = 60000;
-  const durationInMilliseconds = durationInMinutes * millisecondsPerMinute;
-  const hours = dayjs.duration(durationInMilliseconds).hours() > 0
-    ? `${dayjs.duration(durationInMilliseconds).hours()}h `
-    : ``;
-  const minutes = `${dayjs.duration(durationInMilliseconds).minutes()}m`;
+  const hoursCount = Math.floor(dayjs.duration(filmDuration, `minutes`).asHours());
+  const minutesCount = dayjs.duration(filmDuration, `minutes`).minutes();
 
-  return hours + minutes;
+  return `${hoursCount > 0 ? `${hoursCount}h` : ``} ${minutesCount}m`;
 };
 
 export const formatShortFilmRelease = (release) => {
@@ -32,7 +28,7 @@ export const formatFullFilmRelease = (release) => {
     return ``;
   }
 
-  return dayjs(release).format(`D MMMM YYYY`);
+  return dayjs(release).format(`DD MMMM YYYY`);
 };
 
 export const formatCommentDate = (date) => {
@@ -42,4 +38,3 @@ export const formatCommentDate = (date) => {
 
   return dayjs(date).fromNow();
 };
-
